@@ -8,6 +8,7 @@ import "./App.css";
 import AddItem from "./pages/AddItem";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import AllItems from "./pages/AllItems";
 
 function App() {
 	React.useEffect(() => {
@@ -20,9 +21,10 @@ function App() {
 			<Switch>
 				<Fragment>
 					<Navbar />
-					<div className="container">
+					<div className="">
 						<Route exact path="/" component={Home} />
 						<Route path="/add-item" component={AddItem} />
+						<Route path="/all-items" component={AllItems} />
 					</div>
 				</Fragment>
 			</Switch>

@@ -16,6 +16,11 @@ const Navbar = () => {
 							Add Item
 						</NavLink>
 					</li>
+					<li className="nav-item" data-toggle="collapse">
+						<NavLink className="nav-link" to="/all-items">
+							All Items
+						</NavLink>
+					</li>
 				</ul>
 			</div>
 		</nav>

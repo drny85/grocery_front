@@ -58,7 +58,7 @@ const AddItem = () => {
 	};
 
 	return (
-		<div className="">
+		<div className="container">
 			<br />
 			<div className="row">
 				<div
@@ -177,9 +177,6 @@ const AddItem = () => {
 						</div>
 					</div>
 				)}
-			</div>
-			<div className="image">
-				<img src={image} alt="" />
 			</div>
 		</div>
 	);
