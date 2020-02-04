@@ -5,10 +5,15 @@ import "materialize-css/dist/js/materialize.min.js";
 import M from "materialize-css/dist/js/materialize.min.js";
 
 import "./App.css";
-import AddItem from "./pages/AddItem";
+import AddItem from "./pages/Items/AddItem";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import AllItems from "./pages/AllItems";
+import AllItems from "./pages/Items/AllItems";
+import ItemsState from "./context/items/itemsState";
+import { AddCategory } from "./pages/Categories/addCategory";
+import CategoryState from "./context/category/categoryState";
+import { AllCategories } from "./pages/Categories/AllCategories";
+import { EditCategory } from "./pages/Categories/EditCategory";
 
 function App() {
 	React.useEffect(() => {
@@ -17,18 +22,25 @@ function App() {
 		//eslint-disable-next-line
 	}, []);
 	return (
-		<Router>
-			<Switch>
-				<Fragment>
-					<Navbar />
-					<div className="">
-						<Route exact path="/" component={Home} />
-						<Route path="/add-item" component={AddItem} />
-						<Route path="/all-items" component={AllItems} />
-					</div>
-				</Fragment>
-			</Switch>
-		</Router>
+		<ItemsState>
+			<CategoryState>
+				<Router>
+					<Switch>
+						<Fragment>
+							<Navbar />
+							<div className="">
+								<Route exact path="/" component={Home} />
+								<Route path="/add-item" component={AddItem} />
+								<Route path="/all-items" component={AllItems} />
+								<Route path="/add-category" component={AddCategory} />
+								<Route path="/categories" component={AllCategories} />
+								<Route path="/category/:id" component={EditCategory} />
+							</div>
+						</Fragment>
+					</Switch>
+				</Router>
+			</CategoryState>
+		</ItemsState>
 	);
 }
 

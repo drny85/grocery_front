@@ -21,6 +21,11 @@ const Navbar = () => {
 							All Items
 						</NavLink>
 					</li>
+					<li className="nav-item" data-toggle="collapse">
+						<NavLink className="nav-link" to="/add-category">
+							Add Category
+						</NavLink>
+					</li>
 				</ul>
 			</div>
 		</nav>

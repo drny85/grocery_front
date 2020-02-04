@@ -4,14 +4,14 @@ const Item = props => {
 	return (
 		<div className="card medium">
 			<div className="card-image">
-				<img src={item.imageUrl} alt="" />
-				<span className="card-title">{item.name}</span>
+				<img style={{minHeight: "280px", height: "auto"}} src={item.imageUrl} alt="" />
+				<span className="card-title" style={{textTransform: "capitalize"}}>{item.name}</span>
 			</div>
 			<div className="card-content">
-				<p>{item.description}</p>
+				<p style={{textTransform: "capitalize"}}>{item.description}</p>
 			</div>
 			<div className="card-action">
-				<p>{item.price}</p>
+				<p style={{fontWeight:"bold", fontSize: "1.5rem"}}>$ {item.price}</p>
 			</div>
 		</div>
 	);

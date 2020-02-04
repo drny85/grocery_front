@@ -1,30 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { db } from "../services/firebase";
-import Item from "../components/Item";
+import React, { useEffect, useContext } from "react";
+
+import Item from "../../components/Item";
 import PropTypes from "prop-types";
 import "./AddItem";
+import ItemsContext from "../../context/items/itemsContext";
+import { Loader } from "../../components/Loader";
 
 const AllItems = () => {
-	const [items, setItems] = useState([]);
+	const itemsContext = useContext(ItemsContext);
+	const { getItems, loading, items } = itemsContext;
 
 	useEffect(() => {
 		getItems();
+		// eslint-disable-next-line
 	}, []);
 
-	const getItems = async () => {
-		const snapshot = await db.collection("items").get();
-		const temp = snapshot.docs.map(doc => {
-			return {
-				id: doc.id,
-				...doc.data()
-			};
-		});
-		setItems(temp);
-	};
-
-	console.log(items);
+	if (loading) {
+		return <Loader/>
+	}
+	
 	return (
-		<div style={{width: "95%", margin: "0 auto"}} className="main-container">
+		<div style={{ width: "95%", margin: "0 auto" }} className="main-container">
 			<br />
 			<div className="row">
 				<div className="col s12 m2">

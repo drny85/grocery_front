@@ -1,0 +1,12 @@
+export const ADD_ITEM = "ADD_ITEM";
+export const GET_ITEMS = "GET_ITEMS";
+export const GET_ITEM = "GET_ITEM";
+export const SET_LOADING = "SET_LOADING";
+export const ADD_CATEGORY = "ADD_CATEGORY";
+export const GET_CATEGORIES = "GET_CATEGORIES";
+export const GET_CATEGORY = "GET_CATEGORY";
+export const CATEGORY_ERROR = "CATEGORY_ERROR";
+export const EDIT_CATEGORY = "EDIT_CATEGORY";
+export const SET_CATEGORY = "SET_CATEGORY";
+export const CLEAR_CATEGORY = "CLEAR_CATEGORY";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
