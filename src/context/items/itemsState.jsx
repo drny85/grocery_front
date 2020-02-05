@@ -8,7 +8,8 @@ import {
 	SEARCH_BY_NAME,
 	SET_CURRENT_ITEM,
 	CLEAR_CURRENT_ITEM,
-	UPDATE_ITEM
+	UPDATE_ITEM,
+	DELETE_ITEM
 } from "../types";
 import React, { useReducer } from "react";
 import ItemsReducer from "./itemsReducer";
@@ -52,13 +53,16 @@ const ItemsState = props => {
 	const updateItem = async item => {
 		try {
 			setLoading();
-			await db.collection('items').doc(item.id).update(item);
-			dispatch({type: UPDATE_ITEM, payload: item});
+			await db
+				.collection("items")
+				.doc(item.id)
+				.update(item);
+			dispatch({ type: UPDATE_ITEM, payload: item });
 			getItems();
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
 	const getItems = async () => {
 		try {
@@ -105,6 +109,19 @@ const ItemsState = props => {
 		dispatch({ type: CLEAR_CURRENT_ITEM });
 	};
 
+	const deleteItem = async id => {
+		try {
+			setLoading();
+			await db
+				.collection("items")
+				.doc(id)
+				.delete();
+			dispatch({ type: DELETE_ITEM, payload: id });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	// @ts-ignore
 	const setLoading = () => dispatch({ type: SET_LOADING });
 
@@ -123,7 +140,8 @@ const ItemsState = props => {
 				filterByName,
 				setCurrent,
 				clearCurrent,
-				updateItem
+				updateItem,
+				deleteItem
 			}}
 		>
 			{props.children}

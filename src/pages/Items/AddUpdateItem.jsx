@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { storage } from "../../services/firebase";
 import FileUploader from "react-firebase-file-uploader";
 import M from "materialize-css/dist/js/materialize.min.js";
@@ -10,7 +10,14 @@ const AddUpdateItem = props => {
 	const itemsContext = useContext(ItemsContext);
 	const categoryContext = useContext(CategoryContext);
 	const { categories, getCategories } = categoryContext;
-	const { addItem, current, updateItem, clearCurrent } = itemsContext;
+	const {
+		addItem,
+		current,
+		updateItem,
+		clearCurrent,
+		deleteItem
+	} = itemsContext;
+	const modal = useRef();
 
 	const [item, setItem] = useState({
 		name: "",
@@ -20,8 +27,14 @@ const AddUpdateItem = props => {
 		available: true
 	});
 
+	const handleDelete = () => {
+		deleteItem(current.id);
+		props.history.push("/all-items");
+	};
+
 	useEffect(() => {
 		if (current !== null) {
+			M.Modal.init(modal.current);
 			setItem(current);
 			setImage(current.imageUrl);
 		} else {
@@ -30,7 +43,7 @@ const AddUpdateItem = props => {
 
 		return () => {
 			clearCurrent();
-		}
+		};
 
 		//eslint-disable-next-line
 	}, [current]);
@@ -126,26 +139,38 @@ const AddUpdateItem = props => {
 					}
 				>
 					<div className="card">
-						
-						{current ? <button
-							style={{ float: "right", margin: "20px" }}
-							data-target="modal1"
-							className="btn red modal-trigger"
-						>
-							Delete Item
-						</button>: null}
-						<div id="modal1" className="modal">
-							<div className="modal-content">
-								<h4>Modal Header</h4>
-								<p>A bunch of text</p>
-							</div>
-							<div className="modal-footer">
-								
-							</div>
-						</div>
+						{current ? (
+							<>
+								<button
+									style={{ float: "right", margin: "20px" }}
+									data-target="modal1"
+									className="btn red modal-trigger"
+								>
+									Delete Item
+								</button>
+							</>
+						) : null}
+
 						<div className="card-content">
+							<div ref={modal} id="modal1" className="modal">
+								<div className="modal-content">
+									<h4 className="center">
+										Are you sure you want to delete this item?
+									</h4>
+								</div>
+								<div className="modal-footer">
+									<button className="btn grey mr-8 modal-close">Cancel</button>
+									<button
+										onClick={handleDelete}
+										className="btn red modal-close"
+									>
+										Delete
+									</button>
+								</div>
+							</div>
+
 							<div>
-								<h3 className="card-title">
+								<h3 className="card-title bold">
 									{current ? "Update Item" : "Add Item"}
 								</h3>
 							</div>

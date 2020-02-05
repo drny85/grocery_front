@@ -7,7 +7,8 @@ import {
 	SEARCH_BY_NAME,
 	SET_CURRENT_ITEM,
 	CLEAR_CURRENT_ITEM,
-	UPDATE_ITEM
+	UPDATE_ITEM,
+	DELETE_ITEM
 } from "../types";
 
 export default (state, action) => {
@@ -59,6 +60,13 @@ export default (state, action) => {
 				items: [...action.payload],
 				loading: false
 			};
+
+		case DELETE_ITEM:
+			return {
+				...state,
+				items: state.items.filter(item => item.id !== action.payload),
+				loading: false
+			}
 
 		case SET_LOADING:
 			return {
