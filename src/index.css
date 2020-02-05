@@ -23,3 +23,26 @@ code {
   width: 300px;
 
 }
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+a.current {
+  background-color: rgb(33, 77, 64);
+}
+
+.align-center {
+  display: flex;
+  justify-content: center;
+}
+
+.item-selected {
+  background-color: burlywood;
+  height: 200px;
+
+}

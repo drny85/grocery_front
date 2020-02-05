@@ -5,7 +5,10 @@ import {
 	CATEGORY_ERROR,
 	SET_CATEGORY,
 	CLEAR_CATEGORY,
-	UPDATE_CATEGORY
+	UPDATE_CATEGORY,
+	FILTER_BY_CATEGORY,
+	CLEAR_CATEGORY_FILTERS,
+	CLEAR_CATEGORY_ERROR
 } from "../types";
 import React, { useReducer } from "react";
 import CategoryReducer from "./categoryReducer";
@@ -15,6 +18,7 @@ const ItemsState = props => {
 	const initialState = {
 		categories: [],
 		category: null,
+		filtered: null,
 		loading: false,
 		error: null
 	};
@@ -29,12 +33,14 @@ const ItemsState = props => {
 				.collection("categories")
 				.where("name", "==", category.name);
 
-			const found = (await snap.get()).exists;
-			if (!found) {
+			const found = (await snap.get()).docs.length;
+
+			if (found === 0) {
 				await db.collection("categories").add(category);
 				// @ts-ignore
 				getCategories();
-			} else if (found) {
+				clearCategoryError();
+			} else if (found > 0) {
 				// @ts-ignore
 				dispatch({ type: CATEGORY_ERROR, payload: "category already exists" });
 			}
@@ -45,6 +51,8 @@ const ItemsState = props => {
 			dispatch({ type: CATEGORY_ERROR, payload: "there was an error" });
 		}
 	};
+
+	
 
 	const getCategories = async () => {
 		try {
@@ -75,10 +83,13 @@ const ItemsState = props => {
 			console.log(category);
 
 			dispatch({ type: SET_CATEGORY, payload: { id: id, ...category } });
-			
 		} catch (error) {
 			dispatch({ type: CATEGORY_ERROR, payload: "no category found" });
 		}
+	};
+
+	const filterByCategory = text => {
+		dispatch({ type: FILTER_BY_CATEGORY, payload: text });
 	};
 
 	const updateCategory = async category => {
@@ -94,6 +105,10 @@ const ItemsState = props => {
 			console.log(e);
 		}
 	};
+
+	const clearCategoryError = () => dispatch({type: CLEAR_CATEGORY_ERROR});
+
+	const clearFilters = () => dispatch({ type: CLEAR_CATEGORY_FILTERS });
 
 	const clearCategory = () => dispatch({ type: CLEAR_CATEGORY });
 	// @ts-ignore
@@ -111,7 +126,11 @@ const ItemsState = props => {
 				setLoading,
 				setCategory,
 				clearCategory,
-				updateCategory
+				updateCategory,
+				filterByCategory,
+				clearFilters,
+				clearCategoryError,
+				
 			}}
 		>
 			{props.children}

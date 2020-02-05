@@ -4,25 +4,36 @@ import FileUploader from "react-firebase-file-uploader";
 import M from "materialize-css/dist/js/materialize.min.js";
 import ItemsContext from "../../context/items/itemsContext";
 import CategoryContext from "../../context/category/categoryContext";
+import { withRouter } from "react-router-dom";
 
-const AddItem = () => {
-	
-	useEffect(() => {
-		
-		getCategories();
-		//eslint-disable-next-line
-	}, []);
+const AddUpdateItem = props => {
 	const itemsContext = useContext(ItemsContext);
 	const categoryContext = useContext(CategoryContext);
 	const { categories, getCategories } = categoryContext;
-	const { addItem } = itemsContext;
+	const { addItem, current, updateItem, clearCurrent } = itemsContext;
+
 	const [item, setItem] = useState({
 		name: "",
 		description: "",
 		price: "",
-		category: ""
+		category: "",
+		available: true
 	});
-	console.log(categories);
+
+	useEffect(() => {
+		if (current !== null) {
+			setItem(current);
+			setImage(current.imageUrl);
+		} else {
+		}
+		getCategories();
+
+		return () => {
+			clearCurrent();
+		}
+
+		//eslint-disable-next-line
+	}, [current]);
 
 	const [image, setImage] = useState("");
 	const placeholderImage =
@@ -32,6 +43,7 @@ const AddItem = () => {
 
 	const setValue = e => {
 		setItem({ ...item, [e.target.name]: e.target.value });
+		console.log(item.category);
 	};
 
 	const handleImage = async e => {
@@ -42,27 +54,57 @@ const AddItem = () => {
 	const onSubmit = async e => {
 		e.preventDefault();
 
-		const added = {
-			name: item.name,
-			description: item.description,
-			price: parseFloat(item.price),
-			category: item.category,
-			imageUrl: image
-		};
+		if (current !== null) {
+			// handle update item
+			const updated = {
+				id: current.id,
+				name: item.name,
+				description: item.description,
+				price: parseFloat(item.price),
+				category: item.category,
+				imageUrl: image,
+				available: true
+			};
 
-		addItem(added);
+			updateItem(updated);
+			if (updated.id !== null) {
+				setItem({
+					name: "",
+					price: "",
+					description: "",
+					category: "",
+					available: true
+				});
+				M.toast({ html: "Item has been updated!", classes: "green lighten-2" });
+				setImage("");
+				clearCurrent();
+				props.history.goBack();
+			}
+		} else {
+			const added = {
+				name: item.name,
+				description: item.description,
+				price: parseFloat(item.price),
+				category: item.category,
+				imageUrl: image,
+				available: true
+			};
 
-		console.log(added);
-		if (added.id !== null) {
-			setItem({
-				name: "",
-				price: "",
-				description: "",
-				category: ""
-			});
-			M.toast({ html: "Item has been added!", classes: "blue-grey" });
-			setImage("");
+			addItem(added);
+
+			if (added.id !== null) {
+				setItem({
+					name: "",
+					price: "",
+					description: "",
+					category: "",
+					available: true
+				});
+				M.toast({ html: "Item has been added!", classes: "blue-grey" });
+				setImage("");
+			}
 		}
+
 		// console.log(items);
 	};
 
@@ -84,8 +126,30 @@ const AddItem = () => {
 					}
 				>
 					<div className="card">
+						
+						{current ? <button
+							style={{ float: "right", margin: "20px" }}
+							data-target="modal1"
+							className="btn red modal-trigger"
+						>
+							Delete Item
+						</button>: null}
+						<div id="modal1" className="modal">
+							<div className="modal-content">
+								<h4>Modal Header</h4>
+								<p>A bunch of text</p>
+							</div>
+							<div className="modal-footer">
+								
+							</div>
+						</div>
 						<div className="card-content">
-							<h3 className="card-title">Add Item</h3>
+							<div>
+								<h3 className="card-title">
+									{current ? "Update Item" : "Add Item"}
+								</h3>
+							</div>
+
 							<div className="form">
 								<form onSubmit={onSubmit}>
 									<div className="col s12">
@@ -100,7 +164,9 @@ const AddItem = () => {
 												onChange={setValue}
 												className="validate"
 											/>
-											<label htmlFor="name">Item Name</label>
+											<label className="active" htmlFor="name">
+												Item Name
+											</label>
 										</div>
 										<div className="input-field">
 											<input
@@ -112,7 +178,9 @@ const AddItem = () => {
 												onChange={setValue}
 												className="validate"
 											/>
-											<label htmlFor="description">Description</label>
+											<label className="active" htmlFor="description">
+												Description
+											</label>
 										</div>
 
 										<div className="input-field">
@@ -127,7 +195,9 @@ const AddItem = () => {
 												min="0"
 												className="validate"
 											/>
-											<label htmlFor="price">Price</label>
+											<label className="active" htmlFor="price">
+												Price
+											</label>
 										</div>
 
 										<div className="file-field input-field">
@@ -155,30 +225,31 @@ const AddItem = () => {
 									</div>
 									<div className="input-field col s12">
 										<select
-										
+											className="browser-default"
 											value={item.category}
 											name="category"
 											onChange={setValue}
 										>
-											{/* <option value="" disabled>
-												Choose a category
-											</option> */}
-											{categories.map(category => {
-												return (
-													<option key={category.id} value={category.id}>
-														{category.name}
-													</option>
-												);
-											})}
+											<option value="">Choose a category</option>
+
+											{categories.map(category => (
+												<option
+													style={{ textTransform: "capitalize" }}
+													onChange={setValue}
+													key={category.id}
+													value={category.name}
+												>
+													{category.name}
+												</option>
+											))}
 										</select>
-										<label>Materialize Select</label>
 									</div>
 									<div className="submit-btn">
 										<button
 											type="submit"
 											className="waves-effect waves-light btn btn-block black"
 										>
-											Add Item
+											{current ? "Update Item" : "Add Item"}
 										</button>
 									</div>
 								</form>
@@ -220,4 +291,4 @@ const AddItem = () => {
 	);
 };
 
-export default AddItem;
+export default withRouter(AddUpdateItem);

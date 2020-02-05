@@ -13,7 +13,8 @@ export const AddCategory = () => {
 		error,
 		category,
 		clearCategory,
-		updateCategory
+		updateCategory,
+		clearCategoryError,
 	} = categoryContext;
 
 	useEffect(() => {
@@ -26,7 +27,9 @@ export const AddCategory = () => {
 				name: ""
 			});
 		}
-
+		return () => {
+			clearCategoryError();
+		}
 		//eslint-disable-next-line
 	}, [category])
 

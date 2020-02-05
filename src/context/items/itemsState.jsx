@@ -1,5 +1,15 @@
 // @ts-nocheck
-import { ADD_ITEM, GET_ITEMS, SET_LOADING } from "../types";
+import {
+	ADD_ITEM,
+	GET_ITEMS,
+	SET_LOADING,
+	FILTER_ITEMS_BY_CATEGORY,
+	CLEAR_ITEMS_FILTERS,
+	SEARCH_BY_NAME,
+	SET_CURRENT_ITEM,
+	CLEAR_CURRENT_ITEM,
+	UPDATE_ITEM
+} from "../types";
 import React, { useReducer } from "react";
 import ItemsReducer from "./itemsReducer";
 import ItemsContext from "./itemsContext";
@@ -7,7 +17,8 @@ import { db } from "../../services/firebase";
 const ItemsState = props => {
 	const initialState = {
 		items: [],
-		item: null,
+		current: null,
+		filtered: null,
 		loading: false
 	};
 
@@ -38,10 +49,24 @@ const ItemsState = props => {
 		}
 	};
 
+	const updateItem = async item => {
+		try {
+			setLoading();
+			await db.collection('items').doc(item.id).update(item);
+			dispatch({type: UPDATE_ITEM, payload: item});
+			getItems();
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	const getItems = async () => {
 		try {
 			setLoading();
-			const snapshot = await db.collection("items").get();
+			const snapshot = await db
+				.collection("items")
+				.where("available", "==", true)
+				.get();
 			const temp = snapshot.docs.map(doc => {
 				return {
 					id: doc.id,
@@ -53,9 +78,32 @@ const ItemsState = props => {
 		} catch (error) {
 			console.log(error);
 		}
-    };
-    
-   
+	};
+
+	const filterItemsByCategory = text => {
+		setLoading();
+		dispatch({ type: FILTER_ITEMS_BY_CATEGORY, payload: text });
+	};
+
+	const clearItemsFilters = () => {
+		setLoading();
+		dispatch({ type: CLEAR_ITEMS_FILTERS });
+	};
+
+	const filterByName = text => {
+		setLoading();
+		dispatch({ type: SEARCH_BY_NAME, payload: text });
+	};
+
+	const setCurrent = item => {
+		setLoading();
+		dispatch({ type: SET_CURRENT_ITEM, payload: item });
+	};
+
+	const clearCurrent = () => {
+		setLoading();
+		dispatch({ type: CLEAR_CURRENT_ITEM });
+	};
 
 	// @ts-ignore
 	const setLoading = () => dispatch({ type: SET_LOADING });
@@ -64,12 +112,18 @@ const ItemsState = props => {
 		<ItemsContext.Provider
 			value={{
 				items: state.items,
-				item: state.item,
+				current: state.current,
 				loading: state.loading,
+				filtered: state.filtered,
 				addItem,
 				getItems,
-                setLoading
-               
+				setLoading,
+				clearItemsFilters,
+				filterItemsByCategory,
+				filterByName,
+				setCurrent,
+				clearCurrent,
+				updateItem
 			}}
 		>
 			{props.children}

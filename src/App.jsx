@@ -5,7 +5,7 @@ import "materialize-css/dist/js/materialize.min.js";
 import M from "materialize-css/dist/js/materialize.min.js";
 
 import "./App.css";
-import AddItem from "./pages/Items/AddItem";
+import AddUpdateItem from "./pages/Items/AddUpdateItem";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import AllItems from "./pages/Items/AllItems";
@@ -14,6 +14,7 @@ import { AddCategory } from "./pages/Categories/addCategory";
 import CategoryState from "./context/category/categoryState";
 import { AllCategories } from "./pages/Categories/AllCategories";
 import { EditCategory } from "./pages/Categories/EditCategory";
+
 
 function App() {
 	React.useEffect(() => {
@@ -30,11 +31,12 @@ function App() {
 							<Navbar />
 							<div className="">
 								<Route exact path="/" component={Home} />
-								<Route path="/add-item" component={AddItem} />
+								<Route path="/item" component={AddUpdateItem} />
 								<Route path="/all-items" component={AllItems} />
 								<Route path="/add-category" component={AddCategory} />
 								<Route path="/categories" component={AllCategories} />
 								<Route path="/category/:id" component={EditCategory} />
+								
 							</div>
 						</Fragment>
 					</Switch>

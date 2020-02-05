@@ -5,7 +5,10 @@ import {
 	CATEGORY_ERROR,
 	SET_CATEGORY,
 	CLEAR_CATEGORY,
-	UPDATE_CATEGORY
+	UPDATE_CATEGORY,
+	FILTER_BY_CATEGORY,
+CLEAR_CATEGORY_FILTERS,
+CLEAR_CATEGORY_ERROR
 } from "../types";
 
 export default (state, action) => {
@@ -20,6 +23,24 @@ export default (state, action) => {
 			return {
 				...state,
 				error: action.payload,
+				loading: false
+			};
+			case CLEAR_CATEGORY_ERROR:
+				return {
+					...state,
+					error: null,
+					loading: false
+				};
+		case CLEAR_CATEGORY_FILTERS:
+			return {
+				...state,
+				filtered: null,
+				loading: false
+			};
+		case FILTER_BY_CATEGORY:
+			return {
+				...state,
+				filtered: state.categories.filter(category => category.name === action.payload),
 				loading: false
 			};
 		case UPDATE_CATEGORY:
