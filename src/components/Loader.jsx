@@ -1,11 +1,11 @@
 import React from "react";
 import spinner from "../loading.gif";
-import "../index.css"
+import "../index.css";
 
 export const Loader = () => {
 	return (
-		<div className="loading_div">
-      <img className="loading_img" src={spinner} alt="" />
-    </div>
+		<div className="loading-spinner">
+			<img className="loading_img" src={spinner} alt="" />
+		</div>
 	);
 };

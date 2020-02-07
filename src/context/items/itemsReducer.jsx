@@ -9,6 +9,7 @@ import {
 	CLEAR_CURRENT_ITEM,
 	UPDATE_ITEM,
 	DELETE_ITEM
+
 } from "../types";
 
 export default (state, action) => {
@@ -52,7 +53,8 @@ export default (state, action) => {
 				...state,
 				current: null,
 				loading: false
-			}
+			};
+
 
 		case GET_ITEMS:
 			return {

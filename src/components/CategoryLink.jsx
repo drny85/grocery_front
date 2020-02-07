@@ -11,7 +11,7 @@ export const CategoryLink = ({category}) => {
 
 	const handleFilters = () => {
 	
-		filterItemsByCategory(category.name);
+		filterItemsByCategory(category.id);
 		
 	};
 

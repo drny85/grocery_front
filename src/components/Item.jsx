@@ -31,7 +31,7 @@ const Item = ({item, history}) => {
 					<div className="col m5">
 						{item.available ? (
 							<p style={{color: 'green'}}>Available  <i className="material-icons">check</i></p>
-						) : (<p style={{color: 'green'}}>Not Available  <i className="material-icons">close</i></p>)}
+						) : (<p style={{color: 'red'}}>Not Available  <i className="material-icons">close</i></p>)}
 					</div>
 					<br/>
 					<button onClick={navigateToItem} className="btn orange">Edit <i className="material-icons right">edit</i></button>

@@ -15,6 +15,7 @@ import React, { useReducer } from "react";
 import ItemsReducer from "./itemsReducer";
 import ItemsContext from "./itemsContext";
 import { db } from "../../services/firebase";
+
 const ItemsState = props => {
 	const initialState = {
 		items: [],
@@ -67,10 +68,7 @@ const ItemsState = props => {
 	const getItems = async () => {
 		try {
 			setLoading();
-			const snapshot = await db
-				.collection("items")
-				.where("available", "==", true)
-				.get();
+			const snapshot = await db.collection("items").get();
 			const temp = snapshot.docs.map(doc => {
 				return {
 					id: doc.id,
@@ -121,6 +119,19 @@ const ItemsState = props => {
 			console.log(error);
 		}
 	};
+	const changeAvailability = async (id, value) => {
+		try {
+			setLoading();
+			await db
+				.collection("items")
+				.doc(id)
+				.update({
+					available: value
+				});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	// @ts-ignore
 	const setLoading = () => dispatch({ type: SET_LOADING });
@@ -141,7 +152,8 @@ const ItemsState = props => {
 				setCurrent,
 				clearCurrent,
 				updateItem,
-				deleteItem
+				deleteItem,
+				changeAvailability
 			}}
 		>
 			{props.children}

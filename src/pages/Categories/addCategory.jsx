@@ -3,9 +3,14 @@ import CategoryContext from "../../context/category/categoryContext";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { AllCategories } from "./AllCategories";
 
+import AlertContext from "../../context/alerts/alertContext";
+import Alerts from "../../components/Alerts";
+
 export const AddCategory = () => {
 	const [localError, setLocalError] = useState("");
 	const [name, setName] = useState({ name: "" });
+	const alertContext = useContext(AlertContext);
+	const { setAlert } = alertContext;
 
 	const categoryContext = useContext(CategoryContext);
 	const {
@@ -14,24 +19,22 @@ export const AddCategory = () => {
 		category,
 		clearCategory,
 		updateCategory,
-		clearCategoryError,
+		clearCategoryError
 	} = categoryContext;
 
 	useEffect(() => {
 		if (category !== null) {
-			
 			setName(category);
 		} else {
-			
 			setName({
 				name: ""
 			});
 		}
 		return () => {
 			clearCategoryError();
-		}
+		};
 		//eslint-disable-next-line
-	}, [category])
+	}, [category]);
 
 	const nameHandler = e => {
 		if (category !== null) {
@@ -49,6 +52,10 @@ export const AddCategory = () => {
 
 	const onSubmit = e => {
 		e.preventDefault();
+		if(name.name === '') {
+			setAlert('Please enter a name', 'danger');
+			return;
+		}
 		if (category) {
 			updateCategory({
 				id: category.id,
@@ -58,21 +65,31 @@ export const AddCategory = () => {
 				name: ""
 			});
 			
+
 			M.toast({ html: "Category has been updated", classes: "blue-grey" });
 		} else {
 			addCategory(name);
 			setName({
 				name: ""
 			});
-			M.toast({ html: "Category has been added", classes: "blue-grey" });
-		} 
+			if (error) {
+				console.log(error);
+				setAlert(error, "danger");
+			} else {
+				
+				M.toast({ html: "Category has been added", classes: "blue-grey" });
+			}
+		}
+		
 	};
 
 	return (
 		<div>
+			
 			<div className="container">
 				<br />
-				{error ? <div className="error red">{error}</div> : null}
+				<Alerts />
+
 				<br />
 				<h4 className="center">
 					{!category ? "Add Category" : "Updating Category"}

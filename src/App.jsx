@@ -14,7 +14,8 @@ import { AddCategory } from "./pages/Categories/addCategory";
 import CategoryState from "./context/category/categoryState";
 import { AllCategories } from "./pages/Categories/AllCategories";
 import { EditCategory } from "./pages/Categories/EditCategory";
-
+import { Signup } from "./pages/Auth/Signup";
+import AlertState from "./context/alerts/AlertState";
 
 function App() {
 	React.useEffect(() => {
@@ -25,22 +26,24 @@ function App() {
 	return (
 		<ItemsState>
 			<CategoryState>
-				<Router>
-					<Switch>
-						<Fragment>
-							<Navbar />
-							<div className="">
-								<Route exact path="/" component={Home} />
-								<Route path="/item" component={AddUpdateItem} />
-								<Route path="/all-items" component={AllItems} />
-								<Route path="/add-category" component={AddCategory} />
-								<Route path="/categories" component={AllCategories} />
-								<Route path="/category/:id" component={EditCategory} />
-								
-							</div>
-						</Fragment>
-					</Switch>
-				</Router>
+				<AlertState>
+					<Router>
+						<Switch>
+							<Fragment>
+								<Navbar />
+								<div className="">
+									<Route exact path="/" component={Home} />
+									<Route path="/item" component={AddUpdateItem} />
+									<Route path="/all-items" component={AllItems} />
+									<Route path="/add-category" component={AddCategory} />
+									<Route path="/categories" component={AllCategories} />
+									<Route path="/category/:id" component={EditCategory} />
+									<Route path="/signup" component={Signup} />
+								</div>
+							</Fragment>
+						</Switch>
+					</Router>
+				</AlertState>
 			</CategoryState>
 		</ItemsState>
 	);

@@ -4,7 +4,7 @@ import FileUploader from "react-firebase-file-uploader";
 import M from "materialize-css/dist/js/materialize.min.js";
 import ItemsContext from "../../context/items/itemsContext";
 import CategoryContext from "../../context/category/categoryContext";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 
 const AddUpdateItem = props => {
 	const itemsContext = useContext(ItemsContext);
@@ -15,7 +15,8 @@ const AddUpdateItem = props => {
 		current,
 		updateItem,
 		clearCurrent,
-		deleteItem
+		deleteItem,
+		changeAvailability
 	} = itemsContext;
 	const modal = useRef();
 
@@ -29,6 +30,10 @@ const AddUpdateItem = props => {
 
 	const handleDelete = () => {
 		deleteItem(current.id);
+		goBackToItems();
+	};
+
+	const goBackToItems = () => {
 		props.history.push("/all-items");
 	};
 
@@ -37,7 +42,6 @@ const AddUpdateItem = props => {
 			M.Modal.init(modal.current);
 			setItem(current);
 			setImage(current.imageUrl);
-		} else {
 		}
 		getCategories();
 
@@ -121,6 +125,16 @@ const AddUpdateItem = props => {
 		// console.log(items);
 	};
 
+	const handleAvailability = () => {
+		if (current.available) {
+			changeAvailability(current.id, false);
+			goBackToItems();
+		} else {
+			changeAvailability(current.id, true);
+			goBackToItems();
+		}
+	};
+
 	const handleUploadSuccess = filename => {
 		storage
 			.ref("images")
@@ -128,6 +142,26 @@ const AddUpdateItem = props => {
 			.getDownloadURL()
 			.then(url => setImage(url));
 	};
+
+	if (categories.length === 0) {
+		return (
+			<div className="container loading-spinner">
+				<h4 className="center">No Categories Added Yet</h4>
+				<p className="center mb-10">
+					Please add a category some you can start adding your items / products
+				</p>
+				<br />
+				<br />
+				<Link
+					to="/add-category"
+					style={{ marginTop: "2.5rem" }}
+					className="btn blue-grey loading-spinner"
+				>
+					Add your first category
+				</Link>
+			</div>
+		);
+	}
 
 	return (
 		<div className="container">
@@ -141,6 +175,17 @@ const AddUpdateItem = props => {
 					<div className="card">
 						{current ? (
 							<>
+								<button
+									onClick={handleAvailability}
+									style={{
+										float: "right",
+										marginTop: "20px",
+										marginRight: "20px"
+									}}
+									className={`btn ${current.available ? "orange" : "green"}`}
+								>
+									{current.available ? "Mark Unavailable" : "Make Available"}
+								</button>
 								<button
 									style={{ float: "right", margin: "20px" }}
 									data-target="modal1"
@@ -262,7 +307,7 @@ const AddUpdateItem = props => {
 													style={{ textTransform: "capitalize" }}
 													onChange={setValue}
 													key={category.id}
-													value={category.name}
+													value={category.id}
 												>
 													{category.name}
 												</option>
@@ -289,8 +334,10 @@ const AddUpdateItem = props => {
 								<div className="card-image">
 									<img src={image === "" ? placeholderImage : image} alt="" />
 									<span
-										style={{ textTransform: "capitalize", fontWeight: "bold" }}
-										className="card-title text-capitalize"
+										className="card-title capitalize bold
+										
+										
+										"
 									>
 										{item.name}
 									</span>

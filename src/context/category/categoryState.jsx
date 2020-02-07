@@ -13,6 +13,7 @@ import {
 import React, { useReducer } from "react";
 import CategoryReducer from "./categoryReducer";
 import CategoryContext from "./categoryContext";
+
 import { db } from "../../services/firebase";
 const ItemsState = props => {
 	const initialState = {
@@ -43,6 +44,7 @@ const ItemsState = props => {
 			} else if (found > 0) {
 				// @ts-ignore
 				dispatch({ type: CATEGORY_ERROR, payload: "category already exists" });
+				
 			}
 		} catch (e) {
 			console.log(e);
@@ -100,6 +102,8 @@ const ItemsState = props => {
 				.collection("categories")
 				.doc(category.id)
 				.update(category);
+
+			
 			dispatch({ type: UPDATE_CATEGORY, payload: category });
 		} catch (e) {
 			console.log(e);

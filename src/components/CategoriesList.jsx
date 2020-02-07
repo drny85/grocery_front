@@ -7,9 +7,9 @@ export const CategoriesList = ({ handlerFilters }) => {
 	const { categories } = categoryContext;
 
 	return (
-		<div style={{ borderRadius: "12px", height: "100vh" }} className="card">
+		<div style={{ borderRadius: "12px", height: "100vh", position:'fixed' }} className="card fixed">
 			<div
-				style={{ height: "8%", borderRadius: "12px" }}
+				style={{ height: "8%", borderRadius: "12px", width: '15vw', minWidth: '100px' }}
 				onClick={handlerFilters}
 				className="card align-center"
 			>

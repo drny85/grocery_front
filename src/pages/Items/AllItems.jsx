@@ -9,6 +9,7 @@ import { Loader } from "../../components/Loader";
 
 import { CategoriesList } from "../../components/CategoriesList";
 import SearchItem from "../../components/SearchItem";
+import { Link } from "react-router-dom";
 
 const AllItems = ({match}) => {
 	const itemsContext = useContext(ItemsContext);
@@ -32,6 +33,15 @@ const AllItems = ({match}) => {
 
 	if (loading) {
 		return <Loader />;
+	}
+
+	if (items.length === 0) {
+		return (<div className="container loading-spinner">
+			<h4 className="center">No Items Added Yet</h4>
+			<br/>
+			<br/>
+			<Link to='/item' style={{marginTop: '40px'}}  className="btn blue-grey loading-spinner">Add your first Item</Link>
+		</div>)
 	}
 	
 	return (
