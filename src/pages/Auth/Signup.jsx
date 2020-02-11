@@ -3,6 +3,7 @@ import AuthContext from "../../context/auth/authContext";
 import Alerts from "../../components/Alerts";
 import AlertContext from "../../context/alerts/alertContext";
 import { withRouter } from "react-router-dom";
+import { Loader } from "../../components/Loader";
 
 const Signup = props => {
 	const [mode, setMode] = useState("login");
@@ -17,14 +18,25 @@ const Signup = props => {
 	const authContext = useContext(AuthContext);
 	const alertContext = useContext(AlertContext);
 	const { setAlert } = alertContext;
-	const { signup, setError, setUser, login, setLogin, user } = authContext;
-	console.log(new Date().getTime());
+	const {
+		signup,
+		setError,
+		setUser,
+		login,
+		setLogin,
+		isLoading,
+		user,
+		error,
+		isAthenticated
+	} = authContext;
 
 	React.useEffect(() => {
 		if (user) {
-			props.history.push("/");
+			props.history.replace("/orders");
 		}
-	});
+
+		//eslint-disable-next-line
+	}, [isAthenticated, props.history, error]);
 
 	const setValue = e => {
 		setAccount({ ...account, [e.target.name]: e.target.value });
@@ -94,6 +106,10 @@ const Signup = props => {
 		}
 	};
 
+	if (isLoading) {
+		return <Loader />;
+	}
+
 	return (
 		<div className="center-div">
 			<Alerts />
@@ -103,36 +119,36 @@ const Signup = props => {
 				<div className="card-content">
 					<div className="row">
 						<form onSubmit={onSubmit} className="col s12">
-							{mode === 'signup' ?
-							<div className="row">
-								<div className="col s6 m6">
-									<div className="input-field">
-										<input
-											type="text"
-											style={{ fontSize: "1.5rem" }}
-											value={account.name}
-											name="name"
-											onChange={setValue}
-											className="validate white-text"
-											placeholder="First Name"
-										/>
+							{mode === "signup" ? (
+								<div className="row">
+									<div className="col s6 m6">
+										<div className="input-field">
+											<input
+												type="text"
+												style={{ fontSize: "1.5rem" }}
+												value={account.name}
+												name="name"
+												onChange={setValue}
+												className="validate white-text"
+												placeholder="First Name"
+											/>
+										</div>
+									</div>
+									<div className="col s6 m6">
+										<div className="input-field">
+											<input
+												type="text"
+												style={{ fontSize: "1.5rem" }}
+												value={account.lastname}
+												name="lastname"
+												onChange={setValue}
+												className="validate white-text"
+												placeholder="Last Name"
+											/>
+										</div>
 									</div>
 								</div>
-								<div className="col s6 m6">
-									<div className="input-field">
-										<input
-											type="text"
-											style={{ fontSize: "1.5rem" }}
-											value={account.lastname}
-											name="lastname"
-											onChange={setValue}
-											className="validate white-text"
-											placeholder="Last Name"
-										/>
-									</div>
-								</div>
-							</div>
-							: null }
+							) : null}
 
 							<div className="input-field">
 								<input

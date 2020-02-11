@@ -28,3 +28,7 @@ export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
 export const AUTH_ERROR = "AUTH_ERROR";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const GET_ORDER = "GET_ORDER";
+export const GET_ORDERS = "GET_ORDERS";
+export const FILTER_ORDERS = "FILTER_ORDERS";
+export const GET_NAMES = "GET_NAMES";

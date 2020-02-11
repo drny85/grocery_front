@@ -3,13 +3,7 @@ import React, { useReducer } from "react";
 import authReducer from "./authReducer";
 import AuthContext from "./authContext";
 
-import {
-	SET_LOADING,
-	LOGIN,
-	LOGOUT,
-	AUTH_ERROR,
-	LOGIN_SUCCESS
-} from "../types";
+import { SET_LOADING, LOGIN, LOGOUT, AUTH_ERROR } from "../types";
 import { auth, db } from "../../services/firebase";
 
 const AuthState = props => {
@@ -26,6 +20,7 @@ const AuthState = props => {
 	const login = async (email, password) => {
 		return await auth.signInWithEmailAndPassword(email, password);
 	};
+
 	const setLogin = async user => {
 		setLoading();
 		const n = await db
@@ -34,6 +29,7 @@ const AuthState = props => {
 			.get();
 
 		const u = n.data();
+
 		dispatch({
 			type: LOGIN,
 			payload: { userId: u.userId, email: user.email, name: u.name }
@@ -55,6 +51,7 @@ const AuthState = props => {
 	};
 
 	const logout = async () => {
+		setLoading();
 		await auth.signOut();
 		dispatch({ type: LOGOUT });
 	};
@@ -97,7 +94,6 @@ const AuthState = props => {
 				login,
 				logout,
 				signup,
-
 				setError,
 				setUser,
 				autoLogin,

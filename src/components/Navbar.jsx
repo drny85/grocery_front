@@ -53,22 +53,29 @@ const Navbar = props => {
 										Add Category
 									</NavLink>
 								</li>
-								
+								<li className="nav-item" data-toggle="collapse">
+									<NavLink
+										className="nav-link"
+										activeClassName="current"
+										to="/orders"
+									>
+										Orders
+									</NavLink>
+								</li>
+
 								<li className="nav-item right mr-8" data-toggle="collapse">
-								<button onClick={logout} className="btn flat grey">
-									Log out
-								</button>
-							</li>
-							<li style={{paddingRight: '20px'}} className="nav-item right mr-8 ">
-								<h5 className="capitalize bold">
-								{user.name}
-								</h5>
-								
+									<button onClick={logout} className="btn flat grey">
+										Log out
+									</button>
+								</li>
+								<li
+									style={{ paddingRight: "20px" }}
+									className="nav-item right mr-8 "
+								>
+									<h5 className="capitalize bold">{user.name}</h5>
 								</li>
 							</>
-						) : (
-							null
-						)}
+						) : null}
 					</ul>
 				</div>
 			</nav>

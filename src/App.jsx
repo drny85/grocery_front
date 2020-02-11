@@ -1,10 +1,5 @@
-import React, { Fragment, useContext } from "react";
-import {
-	BrowserRouter as Router,
-	Route,
-	Switch,
-	Redirect
-} from "react-router-dom";
+import React, { Fragment } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "materialize-css/dist/css/materialize.min.css";
 import "materialize-css/dist/js/materialize.min.js";
 import M from "materialize-css/dist/js/materialize.min.js";
@@ -22,25 +17,32 @@ import { EditCategory } from "./pages/Categories/EditCategory";
 import Signup from "./pages/Auth/Signup";
 import AlertState from "./context/alerts/AlertState";
 import AuthState from "./context/auth/AuthState";
-import AuthContext from "./context/auth/authContext";
 import { auth } from "./services/firebase";
+import AllOrders from "./pages/orders/AllOrders";
+import AuthContext from "./context/auth/authContext";
+import OrdersState from "./context/orders/OrdersState";
+import PrivateRoute from "./components/PrivatedRoute";
+import { Loader } from "./components/Loader";
 
-function App() {
+const App = () => {
+	const authContext = React.useContext(AuthContext);
 	React.useEffect(() => {
 		M.AutoInit();
-
+		
 		auth.onAuthStateChanged(user => {
+			if (authContext.isLoading) {
+				return <Loader />;
+			}
 			if (user) {
-				console.log("there");
-				return <Redirect to="/" />;
+				authContext.setLogin(user);
 			}
 		});
 		//eslint-disable-next-line
 	}, []);
 
 	return (
-		<AuthState>
-			<ItemsState>
+		<ItemsState>
+			<OrdersState>
 				<CategoryState>
 					<AlertState>
 						<Router>
@@ -49,12 +51,22 @@ function App() {
 									<Navbar />
 
 									<div className="">
-										<Route exact path="/" component={Home} />
-										<Route path="/item" component={AddUpdateItem} />
-										<Route path="/all-items" component={AllItems} />
-										<Route path="/add-category" component={AddCategory} />
-										<Route path="/categories" component={AllCategories} />
-										<Route path="/category/:id" component={EditCategory} />
+										<PrivateRoute exact path="/" component={Home} />
+										<PrivateRoute path="/item" component={AddUpdateItem} />
+										<PrivateRoute path="/all-items" component={AllItems} />
+										<PrivateRoute
+											path="/add-category"
+											component={AddCategory}
+										/>
+										<PrivateRoute
+											path="/categories"
+											component={AllCategories}
+										/>
+										<PrivateRoute
+											path="/category/:id"
+											component={EditCategory}
+										/>
+										<PrivateRoute path="/orders" component={AllOrders} />
 										<Route path="/signup" component={Signup} />
 									</div>
 								</Fragment>
@@ -62,9 +74,15 @@ function App() {
 						</Router>
 					</AlertState>
 				</CategoryState>
-			</ItemsState>
+			</OrdersState>
+		</ItemsState>
+	);
+};
+
+export default () => {
+	return (
+		<AuthState>
+			<App />
 		</AuthState>
 	);
-}
-
-export default App;
+};

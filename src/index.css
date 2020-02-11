@@ -89,6 +89,22 @@ a.current {
 .alert-success {
   background-color: rgb(49, 129, 49);
 }
+
 .mb-10 {
   margin-bottom: 2.5rem;
+}
+
+.pxy-8 {
+  padding: 28px 0px !important;
+  border-radius: 10px;
+
+}
+
+.w-30 {
+  width: 30% !important;
+}
+
+.orders {
+  width: 90vw;
+  margin: 0 auto;
 }
