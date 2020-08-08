@@ -5,18 +5,16 @@ import { AllCategories } from "./AllCategories";
 
 import AlertContext from "../../context/alerts/alertContext";
 import Alerts from "../../components/Alerts";
-import AddonsContext from "../../context/addons/addonsContext";
+
 
 export const AddCategory = () => {
 	//CONTEXTS START
 	const alertContext = useContext(AlertContext);
-	const addonsContext = useContext(AddonsContext);
-	const { addons, getAddons } = addonsContext;
 	const { setAlert } = alertContext;
 	const categoryContext = useContext(CategoryContext);
 	const {
 		addCategory,
-		error,
+		
 		current,
 		categories,
 		clearCategory,
@@ -32,7 +30,6 @@ export const AddCategory = () => {
 
 	const [isValid, setIsValid] = useState(true);
 
-	const [itemAddons, setItemAddons] = useState("");
 
 	//REFS
 	const modal = React.useRef();
@@ -55,8 +52,7 @@ export const AddCategory = () => {
 		M.FormSelect.init(select.current, {});
 
 		M.Modal.init(modal.current, {});
-		getAddons();
-
+	
 		if (current !== null) {
 			setCategory({ name: current.name });
 

@@ -1,7 +1,6 @@
 // @ts-nocheck
 import {
 	SET_LOADING,
-	ADD_ADDON,
 	GET_ADDONS,
 	ADDON_ERROR,
 	CLEAR_ADDON_ERROR,

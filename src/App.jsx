@@ -28,6 +28,7 @@ import OrderDetails from "./pages/orders/OrderDetails";
 import AddonsState from "./context/addons/AddonsState";
 import AddUpdateAddons from "./pages/addons/AddUpdateAddons";
 
+
 const App = () => {
 	const authContext = React.useContext(AuthContext);
 	React.useEffect(() => {

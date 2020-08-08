@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { withRouter } from "react-router-dom";
+import Axios from "axios";
 
 const OrderDetailsTop = (props) => {
 	const { order, changeStatus, history } = props;
@@ -15,15 +16,34 @@ const OrderDetailsTop = (props) => {
 	React.useEffect(() => {
 		M.Modal.init(modal.current);
 		M.FormSelect.init(sel.current);
-		//setStatus(status);
+
 		//eslint-disable-next-line
 	}, [status]);
+	console.log(status);
 
-	const handleStatus = () => {
+	const handleStatus = async () => {
 		if (newStatus !== "") {
 			changeStatus(order.id, newStatus);
 			setStatus("");
 			history.goBack();
+		}
+
+		if (newStatus === "delivered") {
+			try {
+				const result = Axios.post(
+					"https://us-central1-grocery-409ef.cloudfunctions.net/sendNotification/sendNotification",
+					{
+						title: "Congratulations!",
+						body: "Your order is on its way!",
+						data: order,
+						userId: order.userId,
+					}
+				);
+
+				console.log((await result).data);
+			} catch (error) {
+				console.log(error.data);
+			}
 		}
 	};
 
