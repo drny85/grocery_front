@@ -59,14 +59,14 @@ export default (state, action) => {
 		case CLEAR_CATEGORY:
 			return {
 				...state,
-				category: null,
+				current: null,
 				loading: false
 			};
 
 		case SET_CATEGORY:
 			return {
 				...state,
-				category: action.payload,
+				current: action.payload,
 				loading: false
 			};
 		case SET_LOADING:

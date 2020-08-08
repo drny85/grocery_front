@@ -8,28 +8,28 @@ import {
 	UPDATE_CATEGORY,
 	FILTER_BY_CATEGORY,
 	CLEAR_CATEGORY_FILTERS,
-	CLEAR_CATEGORY_ERROR
+	CLEAR_CATEGORY_ERROR,
 } from "../types";
 import React, { useReducer } from "react";
 import CategoryReducer from "./categoryReducer";
 import CategoryContext from "./categoryContext";
 
 import { db } from "../../services/firebase";
-const ItemsState = props => {
+const CategoryState = (props) => {
 	const initialState = {
 		categories: [],
-		category: null,
+		current: null,
 		filtered: null,
 		loading: false,
-		error: null
+		error: null,
 	};
 
 	const [state, dispatch] = useReducer(CategoryReducer, initialState);
 
-	const addCategory = async category => {
+	const addCategory = async (category) => {
 		try {
 			setLoading();
-			console.log(category);
+			console.log("CATEGOTY", category);
 			const snap = db
 				.collection("categories")
 				.where("name", "==", category.name);
@@ -43,8 +43,8 @@ const ItemsState = props => {
 				clearCategoryError();
 			} else if (found > 0) {
 				// @ts-ignore
+				console.log("EXIST");
 				dispatch({ type: CATEGORY_ERROR, payload: "category already exists" });
-				
 			}
 		} catch (e) {
 			console.log(e);
@@ -54,16 +54,14 @@ const ItemsState = props => {
 		}
 	};
 
-	
-
 	const getCategories = async () => {
 		try {
 			setLoading();
 			const snapshot = await db.collection("categories").get();
-			const temp = snapshot.docs.map(doc => {
+			const temp = snapshot.docs.map((doc) => {
 				return {
 					id: doc.id,
-					...doc.data()
+					...doc.data(),
 				};
 			});
 
@@ -74,15 +72,11 @@ const ItemsState = props => {
 		}
 	};
 
-	const setCategory = async id => {
+	const setCategory = async (id) => {
 		try {
 			setLoading();
-			const doc = db
-				.collection("categories")
-				.doc(id)
-				.get();
+			const doc = db.collection("categories").doc(id).get();
 			const category = (await doc).data();
-			console.log(category);
 
 			dispatch({ type: SET_CATEGORY, payload: { id: id, ...category } });
 		} catch (error) {
@@ -90,27 +84,34 @@ const ItemsState = props => {
 		}
 	};
 
-	const filterByCategory = text => {
+	const filterByCategory = (text) => {
 		dispatch({ type: FILTER_BY_CATEGORY, payload: text });
 	};
 
-	const updateCategory = async category => {
+	const updateCategory = async (category) => {
 		try {
 			setLoading();
 			console.log(category);
-			await db
-				.collection("categories")
-				.doc(category.id)
-				.update(category);
+			await db.collection("categories").doc(category.id).update(category);
 
-			
 			dispatch({ type: UPDATE_CATEGORY, payload: category });
 		} catch (e) {
 			console.log(e);
 		}
 	};
 
-	const clearCategoryError = () => dispatch({type: CLEAR_CATEGORY_ERROR});
+	const deleteCategory = async (id) => {
+		console.log(id);
+		try {
+			await db.collection("categories").doc(id).delete();
+
+			getCategories();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const clearCategoryError = () => dispatch({ type: CLEAR_CATEGORY_ERROR });
 
 	const clearFilters = () => dispatch({ type: CLEAR_CATEGORY_FILTERS });
 
@@ -122,19 +123,19 @@ const ItemsState = props => {
 		<CategoryContext.Provider
 			value={{
 				categories: state.categories,
-				category: state.category,
+				current: state.current,
 				loading: state.loading,
 				error: state.error,
 				addCategory,
 				getCategories,
 				setLoading,
 				setCategory,
+				deleteCategory,
 				clearCategory,
 				updateCategory,
 				filterByCategory,
 				clearFilters,
 				clearCategoryError,
-				
 			}}
 		>
 			{props.children}
@@ -142,4 +143,4 @@ const ItemsState = props => {
 	);
 };
 
-export default ItemsState;
+export default CategoryState;

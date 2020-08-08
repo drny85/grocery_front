@@ -2,24 +2,21 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import AuthContext from "../context/auth/authContext";
 import { Loader } from "./Loader";
+import Signup from "../pages/Auth/Signup";
 
 const PrivatedRoute = ({ component: Component, ...rest }) => {
 	const authContext = React.useContext(AuthContext);
 	const { isAuthenticated, isLoading } = authContext;
-	
-	if (isLoading) {
-		return <Loader />
+
+	if (!isAuthenticated) {
+		return <Loader />;
 	}
-   
+
 	return (
 		<Route
 			{...rest}
-			render={props =>
-				!isAuthenticated && !isLoading ? (
-					<Redirect to="/signup" />
-				) : (
-					<Component {...props} />
-				)
+			render={(props) =>
+				!isAuthenticated && !isLoading ? <Signup /> : <Component {...props} />
 			}
 		/>
 	);

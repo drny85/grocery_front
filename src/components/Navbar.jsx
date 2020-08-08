@@ -9,9 +9,10 @@ const Navbar = props => {
 		authContext.logout();
 		props.history.replace("/signup");
 	};
+
 	return (
 		<div className="navbar-fixed">
-			<nav className="bg-light blue-grey ">
+			<nav className="bg-light secondary">
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<ul className="navbar-nav mr-auto">
 						{isAuthenticated ? (
@@ -51,6 +52,15 @@ const Navbar = props => {
 										to="/add-category"
 									>
 										Add Category
+									</NavLink>
+								</li>
+								<li className="nav-item" data-toggle="collapse">
+									<NavLink
+										className="nav-link"
+										activeClassName="current"
+										to="/addons"
+									>
+										Addons
 									</NavLink>
 								</li>
 								<li className="nav-item" data-toggle="collapse">

@@ -108,3 +108,47 @@ a.current {
   width: 90vw;
   margin: 0 auto;
 }
+
+.pd-5 {
+  display: flex;
+  padding-bottom: 30px;
+
+  line-height: 1.7;
+
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.uppercase {
+  text-transform: uppercase !important;
+}
+
+.text-uppercase-white {
+  text-transform: uppercase;
+  color: whitesmoke;
+  font-size: 1.5rem;
+}
+
+.secondary {
+  background-color: #34495e !important;
+}
+
+.new-status {
+  background-color: #2980b9 !important;
+
+
+}
+
+.in-progress-status {
+  background-color: #f39c12 !important;
+}
+
+.delivered-status {
+  background-color: #2ecc71 !important;
+}
+
+.btn-rounded {
+  padding: 10px 20px !important;
+  border-radius: 50px !important;
+}
+

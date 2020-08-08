@@ -6,13 +6,13 @@ import AuthContext from "./authContext";
 import { SET_LOADING, LOGIN, LOGOUT, AUTH_ERROR } from "../types";
 import { auth, db } from "../../services/firebase";
 
-const AuthState = props => {
+const AuthState = (props) => {
 	const initialState = {
 		user: null,
 		isLoading: false,
 		isAuthenticated: false,
 		isAdmin: false,
-		error: null
+		error: null,
 	};
 
 	const [state, dispatch] = useReducer(authReducer, initialState);
@@ -21,29 +21,27 @@ const AuthState = props => {
 		return await auth.signInWithEmailAndPassword(email, password);
 	};
 
-	const setLogin = async user => {
+	const setLogin = async (user) => {
 		setLoading();
-		const n = await db
-			.collection("users")
-			.doc(user.uid)
-			.get();
+		const n = await db.collection("users").doc(user.uid).get();
 
 		const u = n.data();
-
-		dispatch({
-			type: LOGIN,
-			payload: { userId: u.userId, email: user.email, name: u.name }
-		});
+		if (u) {
+			dispatch({
+				type: LOGIN,
+				payload: { userId: u.userId, email: user.email, name: u.name },
+			});
+		}
 	};
 
 	const signup = async (email, password) => {
 		return await auth.createUserWithEmailAndPassword(email, password);
 	};
 
-	const setError = error => dispatch({ type: AUTH_ERROR, payload: error });
+	const setError = (error) => dispatch({ type: AUTH_ERROR, payload: error });
 
 	const autoLogin = () => {
-		auth.onAuthStateChanged(u => {
+		auth.onAuthStateChanged((u) => {
 			if (u) {
 				setLogin(u);
 			}
@@ -56,25 +54,23 @@ const AuthState = props => {
 		dispatch({ type: LOGOUT });
 	};
 
-	const setUser = async user => {
+	const setUser = async (user) => {
+		console.log("USER:", user);
 		try {
 			setLoading();
-			await db
-				.collection("users")
-				.doc(user.uid)
-				.set({
-					userId: user.uid,
-					email: user.email,
-					name: user.name,
-					lastName: user.lastname
-				});
-
+			await db.collection("users").doc(user.uid).set({
+				userId: user.uid,
+				email: user.email,
+				name: user.name,
+				lastName: user.lastname,
+			});
+			console.log('SET')
 			dispatch({
 				type: LOGIN,
 				payload: {
 					userId: user.uid,
-					email: user.email
-				}
+					email: user.email,
+				},
 			});
 		} catch (error) {
 			setError(error.message);
@@ -97,7 +93,7 @@ const AuthState = props => {
 				setError,
 				setUser,
 				autoLogin,
-				setLogin
+				setLogin,
 			}}
 		>
 			{props.children}

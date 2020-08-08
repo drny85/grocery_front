@@ -4,7 +4,8 @@ import {
 	GET_ORDERS,
 	SET_CURRENT_ITEM,
 	CLEAR_CURRENT_ITEM,
-	GET_NAMES
+	CHANGE_STATUS,
+	ORDERS_COUNT,
 } from "../types";
 
 export default (state, action) => {
@@ -13,22 +14,40 @@ export default (state, action) => {
 			return {
 				...state,
 				loading: true,
-				error: null
+				error: null,
 			};
-		case GET_NAMES:
+
+		case ORDERS_COUNT:
 			return {
 				...state,
 				loading: false,
 				error: null,
-				names: [...action.payload]
-			}
+				delivered: state.orders.filter((order) => order.status === "delivered")
+					.length,
+				in_progress: state.orders.filter(
+					(order) => order.status === "in progress"
+				).length,
+				new: state.orders.filter((order) => order.status === "new").length,
+			};
 
+		case CHANGE_STATUS:
+			return {
+				...state,
+				orders: state.orders.filter((order) => {
+					if (order.id === action.payload.id) {
+						return (order.status = action.payload.status);
+					}
+					return order;
+				}),
+				loading: false,
+				error: null,
+			};
 		case SET_CURRENT_ITEM:
 			return {
 				...state,
 				current: action.payload,
 				loading: false,
-				error: null
+				error: null,
 			};
 
 		case CLEAR_CURRENT_ITEM:
@@ -36,7 +55,7 @@ export default (state, action) => {
 				...state,
 				loading: false,
 				current: null,
-				error: null
+				error: null,
 			};
 
 		case GET_ORDER:
@@ -44,14 +63,14 @@ export default (state, action) => {
 				...state,
 				current: action.payload,
 				loading: false,
-				error: false
+				error: false,
 			};
 		case GET_ORDERS:
 			return {
 				...state,
 				orders: [...action.payload],
 				loading: false,
-				error: false
+				error: false,
 			};
 
 		default:

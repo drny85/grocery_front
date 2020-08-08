@@ -23,14 +23,19 @@ import AuthContext from "./context/auth/authContext";
 import OrdersState from "./context/orders/OrdersState";
 import PrivateRoute from "./components/PrivatedRoute";
 import { Loader } from "./components/Loader";
+import NotificationSate from "./context/notifications/NotificationState";
+import OrderDetails from "./pages/orders/OrderDetails";
+import AddonsState from "./context/addons/AddonsState";
+import AddUpdateAddons from "./pages/addons/AddUpdateAddons";
 
 const App = () => {
 	const authContext = React.useContext(AuthContext);
 	React.useEffect(() => {
 		M.AutoInit();
-		
-		auth.onAuthStateChanged(user => {
+
+		auth.onAuthStateChanged((user) => {
 			if (authContext.isLoading) {
+				console.log("YES");
 				return <Loader />;
 			}
 			if (user) {
@@ -41,41 +46,53 @@ const App = () => {
 	}, []);
 
 	return (
-		<ItemsState>
-			<OrdersState>
-				<CategoryState>
-					<AlertState>
-						<Router>
-							<Switch>
-								<Fragment>
-									<Navbar />
+		<NotificationSate>
+			<ItemsState>
+				<AddonsState>
+					<OrdersState>
+						<CategoryState>
+							<AlertState>
+								<Router>
+									<Switch>
+										<Fragment>
+											<Navbar />
 
-									<div className="">
-										<PrivateRoute exact path="/" component={Home} />
-										<PrivateRoute path="/item" component={AddUpdateItem} />
-										<PrivateRoute path="/all-items" component={AllItems} />
-										<PrivateRoute
-											path="/add-category"
-											component={AddCategory}
-										/>
-										<PrivateRoute
-											path="/categories"
-											component={AllCategories}
-										/>
-										<PrivateRoute
-											path="/category/:id"
-											component={EditCategory}
-										/>
-										<PrivateRoute path="/orders" component={AllOrders} />
-										<Route path="/signup" component={Signup} />
-									</div>
-								</Fragment>
-							</Switch>
-						</Router>
-					</AlertState>
-				</CategoryState>
-			</OrdersState>
-		</ItemsState>
+											<div className="">
+												<PrivateRoute exact path="/" component={Home} />
+												<PrivateRoute path="/item" component={AddUpdateItem} />
+												<PrivateRoute path="/all-items" component={AllItems} />
+												<PrivateRoute
+													path="/add-category"
+													component={AddCategory}
+												/>
+												<PrivateRoute
+													path="/categories"
+													component={AllCategories}
+												/>
+												<PrivateRoute
+													path="/category/:id"
+													component={EditCategory}
+												/>
+												<PrivateRoute
+													path="/addons"
+													component={AddUpdateAddons}
+												/>
+												<PrivateRoute path="/orders" component={AllOrders} />
+												<PrivateRoute
+													path="/order/details"
+													component={OrderDetails}
+												/>
+												<Route path="/signup" component={Signup} />
+											</div>
+										</Fragment>
+									</Switch>
+								</Router>
+							</AlertState>
+						</CategoryState>
+					</OrdersState>
+				</AddonsState>
+			</ItemsState>
+		</NotificationSate>
 	);
 };
 

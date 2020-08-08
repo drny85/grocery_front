@@ -3,16 +3,15 @@ import AuthContext from "../../context/auth/authContext";
 import Alerts from "../../components/Alerts";
 import AlertContext from "../../context/alerts/alertContext";
 import { withRouter } from "react-router-dom";
-import { Loader } from "../../components/Loader";
 
-const Signup = props => {
+const Signup = (props) => {
 	const [mode, setMode] = useState("login");
 	const [account, setAccount] = useState({
 		name: "",
 		lastname: "",
 		email: "",
 		password: "",
-		confirm: ""
+		confirm: "",
 	});
 
 	const authContext = useContext(AuthContext);
@@ -24,25 +23,26 @@ const Signup = props => {
 		setUser,
 		login,
 		setLogin,
-		isLoading,
 		user,
 		error,
-		isAthenticated
+		isAthenticated,
+		isLoading,
 	} = authContext;
+
+	console.log(isLoading);
 
 	React.useEffect(() => {
 		if (user) {
 			props.history.replace("/orders");
 		}
-
 		//eslint-disable-next-line
 	}, [isAthenticated, props.history, error]);
 
-	const setValue = e => {
+	const setValue = (e) => {
 		setAccount({ ...account, [e.target.name]: e.target.value });
 	};
 
-	const onSubmit = async e => {
+	const onSubmit = async (e) => {
 		e.preventDefault();
 		if (mode === "signup") {
 			if (account.name === "") {
@@ -63,10 +63,13 @@ const Signup = props => {
 			} else {
 				try {
 					const u = await signup(account.email, account.password);
+					console.log(u.user);
 					setUser({
 						uid: u.user.uid,
+						name: account.name,
+						lastname: account.lastname,
 						email: u.user.email,
-						createdAt: new Date().getTime()
+						createdAt: new Date().getTime(),
 					});
 				} catch (error) {
 					setError(error);
@@ -88,7 +91,7 @@ const Signup = props => {
 					console.log(u);
 					setLogin({
 						uid: u.user.uid,
-						email: u.user.email
+						email: u.user.email,
 					});
 				} catch (error) {
 					setError(error);
@@ -106,115 +109,116 @@ const Signup = props => {
 		}
 	};
 
-	if (isLoading) {
-		return <Loader />;
-	}
-
 	return (
 		<div className="center-div">
 			<Alerts />
-			<h4 className="center">{mode === "signup" ? "Sign Up" : "Login"}</h4>
-			<br />
-			<div className="card blue-grey z-depth-3">
-				<div className="card-content">
-					<div className="row">
-						<form onSubmit={onSubmit} className="col s12">
-							{mode === "signup" ? (
-								<div className="row">
-									<div className="col s6 m6">
-										<div className="input-field">
-											<input
-												type="text"
-												style={{ fontSize: "1.5rem" }}
-												value={account.name}
-												name="name"
-												onChange={setValue}
-												className="validate white-text"
-												placeholder="First Name"
-											/>
-										</div>
-									</div>
-									<div className="col s6 m6">
-										<div className="input-field">
-											<input
-												type="text"
-												style={{ fontSize: "1.5rem" }}
-												value={account.lastname}
-												name="lastname"
-												onChange={setValue}
-												className="validate white-text"
-												placeholder="Last Name"
-											/>
-										</div>
-									</div>
-								</div>
-							) : null}
 
-							<div className="input-field">
-								<input
-									type="text"
-									style={{ fontSize: "1.5rem" }}
-									value={account.email}
-									name="email"
-									onChange={setValue}
-									className="validate white-text"
-									placeholder="Email"
-								/>
-							</div>
-							<div className="input-field">
-								<input
-									style={{ fontSize: "1.5rem" }}
-									type="password"
-									value={account.password}
-									onChange={setValue}
-									name="password"
-									placeholder="Password"
-								/>
-							</div>
-							{mode === "signup" ? (
+			<>
+				<h4 className="center">{mode === "signup" ? "Sign Up" : "Login"}</h4>
+				<br />
+				<div className="card blue-grey z-depth-3">
+					<div className="card-content">
+						<div className="row">
+							<form onSubmit={onSubmit} className="col s12">
+								{mode === "signup" ? (
+									<div className="row">
+										<div className="col s6 m6">
+											<div className="input-field">
+												<input
+													type="text"
+													style={{ fontSize: "1.5rem" }}
+													value={account.name}
+													name="name"
+													onChange={setValue}
+													className="validate white-text"
+													placeholder="First Name"
+												/>
+											</div>
+										</div>
+										<div className="col s6 m6">
+											<div className="input-field">
+												<input
+													type="text"
+													style={{ fontSize: "1.5rem" }}
+													value={account.lastname}
+													name="lastname"
+													onChange={setValue}
+													className="validate white-text"
+													placeholder="Last Name"
+												/>
+											</div>
+										</div>
+									</div>
+								) : null}
+
+								<div className="input-field">
+									<input
+										type="text"
+										style={{ fontSize: "1.5rem" }}
+										value={account.email}
+										name="email"
+										onChange={setValue}
+										className="validate white-text"
+										placeholder="Email"
+									/>
+								</div>
 								<div className="input-field">
 									<input
 										style={{ fontSize: "1.5rem" }}
 										type="password"
-										value={account.confirm}
+										value={account.password}
 										onChange={setValue}
-										name="confirm"
-										placeholder="Confirm Password"
+										name="password"
+										placeholder="Password"
 									/>
 								</div>
-							) : null}
-							<div className="">
-								<button
-									style={{ width: "10rem" }}
-									className="btn grey"
-									type="submit"
-								>
-									{mode !== "login" ? "Sign Up" : "Login"}
-								</button>
-							</div>
-							<br />
-						</form>
-						<div className="rig">
-							<p style={{ paddingRight: "20px" }} className="mr-10">
-								{mode === "login" ? "Need an account ? " : "Have an account ? "}
-								<span>
+								{mode === "signup" ? (
+									<div className="input-field">
+										<input
+											style={{ fontSize: "1.5rem" }}
+											type="password"
+											value={account.confirm}
+											onChange={setValue}
+											name="confirm"
+											placeholder="Confirm Password"
+										/>
+									</div>
+								) : null}
+								<div className="">
 									<button
-										style={{
-											fontWeight: "bold",
-											color: "white",
-											letterSpacing: 1.5
-										}}
-										onClick={switchMode}
-										className="waves-effect waves-teal btn-flat blue-grey"
+										style={{ width: "10rem" }}
+										className="btn grey"
+										type="submit"
 									>
-										{mode === "login" ? "Sign Up" : "Login"}
+										{mode !== "login" ? "Sign Up" : "Login"}
 									</button>
-								</span>
-							</p>
+								</div>
+								<br />
+							</form>
+							<div className="rig">
+								<p style={{ paddingRight: "20px" }} className="mr-10">
+									{mode === "login"
+										? "Need an account ? "
+										: "Have an account ? "}
+									<span>
+										<button
+											style={{
+												fontWeight: "bold",
+												color: "white",
+												letterSpacing: 1.5,
+											}}
+											onClick={switchMode}
+											className="waves-effect waves-teal btn-flat blue-grey"
+										>
+											{mode === "login" ? "Sign Up" : "Login"}
+										</button>
+									</span>
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</>
 		</div>
 	);
 };

@@ -9,37 +9,34 @@ import {
 	SET_CURRENT_ITEM,
 	CLEAR_CURRENT_ITEM,
 	UPDATE_ITEM,
-	DELETE_ITEM
+	DELETE_ITEM,
 } from "../types";
 import React, { useReducer } from "react";
 import ItemsReducer from "./itemsReducer";
 import ItemsContext from "./itemsContext";
 import { db } from "../../services/firebase";
 
-const ItemsState = props => {
+const ItemsState = (props) => {
 	const initialState = {
 		items: [],
 		current: null,
 		filtered: null,
-		loading: false
+		loading: false,
 	};
 
 	const [state, dispatch] = useReducer(ItemsReducer, initialState);
 
-	const addItem = async item => {
+	const addItem = async (item) => {
 		try {
 			setLoading();
 			const doc = await db.collection("items").add(item);
-			const itemData = await db
-				.collection("items")
-				.doc(doc.id)
-				.get();
+			const itemData = await db.collection("items").doc(doc.id).get();
 			if (itemData.exists) {
 				const t = {
 					id: doc.id,
-					...itemData.data()
+					...itemData.data(),
 				};
-				console.log(t);
+
 				// @ts-ignore
 				dispatch({ type: ADD_ITEM, payload: t });
 			} else {
@@ -51,13 +48,10 @@ const ItemsState = props => {
 		}
 	};
 
-	const updateItem = async item => {
+	const updateItem = async (item) => {
 		try {
 			setLoading();
-			await db
-				.collection("items")
-				.doc(item.id)
-				.update(item);
+			await db.collection("items").doc(item.id).update(item);
 			dispatch({ type: UPDATE_ITEM, payload: item });
 			getItems();
 		} catch (error) {
@@ -69,10 +63,10 @@ const ItemsState = props => {
 		try {
 			setLoading();
 			const snapshot = await db.collection("items").get();
-			const temp = snapshot.docs.map(doc => {
+			const temp = snapshot.docs.map((doc) => {
 				return {
 					id: doc.id,
-					...doc.data()
+					...doc.data(),
 				};
 			});
 			// @ts-ignore
@@ -82,7 +76,7 @@ const ItemsState = props => {
 		}
 	};
 
-	const filterItemsByCategory = text => {
+	const filterItemsByCategory = (text) => {
 		setLoading();
 		dispatch({ type: FILTER_ITEMS_BY_CATEGORY, payload: text });
 	};
@@ -92,12 +86,12 @@ const ItemsState = props => {
 		dispatch({ type: CLEAR_ITEMS_FILTERS });
 	};
 
-	const filterByName = text => {
+	const filterByName = (text) => {
 		setLoading();
 		dispatch({ type: SEARCH_BY_NAME, payload: text });
 	};
 
-	const setCurrent = item => {
+	const setCurrent = (item) => {
 		setLoading();
 		dispatch({ type: SET_CURRENT_ITEM, payload: item });
 	};
@@ -107,13 +101,10 @@ const ItemsState = props => {
 		dispatch({ type: CLEAR_CURRENT_ITEM });
 	};
 
-	const deleteItem = async id => {
+	const deleteItem = async (id) => {
 		try {
 			setLoading();
-			await db
-				.collection("items")
-				.doc(id)
-				.delete();
+			await db.collection("items").doc(id).delete();
 			dispatch({ type: DELETE_ITEM, payload: id });
 		} catch (error) {
 			console.log(error);
@@ -122,12 +113,9 @@ const ItemsState = props => {
 	const changeAvailability = async (id, value) => {
 		try {
 			setLoading();
-			await db
-				.collection("items")
-				.doc(id)
-				.update({
-					available: value
-				});
+			await db.collection("items").doc(id).update({
+				available: value,
+			});
 		} catch (error) {
 			console.log(error);
 		}
@@ -153,7 +141,7 @@ const ItemsState = props => {
 				clearCurrent,
 				updateItem,
 				deleteItem,
-				changeAvailability
+				changeAvailability,
 			}}
 		>
 			{props.children}

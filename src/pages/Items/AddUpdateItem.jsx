@@ -6,26 +6,45 @@ import ItemsContext from "../../context/items/itemsContext";
 import CategoryContext from "../../context/category/categoryContext";
 import { withRouter, Link } from "react-router-dom";
 
-const AddUpdateItem = props => {
+const SIZES = [
+	{ size: "small" },
+	{ size: "medium" },
+	{ size: "large" },
+	{ size: "extra large" },
+];
+
+const AddUpdateItem = (props) => {
 	const itemsContext = useContext(ItemsContext);
 	const categoryContext = useContext(CategoryContext);
 	const { categories, getCategories } = categoryContext;
+
 	const {
 		addItem,
 		current,
 		updateItem,
 		clearCurrent,
 		deleteItem,
-		changeAvailability
+		changeAvailability,
 	} = itemsContext;
 	const modal = useRef();
+	const select = useRef();
+	const select2 = useRef();
+	const selectSize = React.useRef();
+
+	const [selectedSizes, setSelectedSizes] = useState({ value: [] });
+
+	const sizeHandler = (e) => {
+		setSelectedSizes({
+			value: Array.from(e.target.selectedOptions, (item) => item.value),
+		});
+	};
 
 	const [item, setItem] = useState({
 		name: "",
 		description: "",
 		price: "",
 		category: "",
-		available: true
+		available: true,
 	});
 
 	const handleDelete = () => {
@@ -33,15 +52,26 @@ const AddUpdateItem = props => {
 		goBackToItems();
 	};
 
+	const resetSelectFields = () => {
+		M.FormSelect.init(select.current, { classes: "capitalize" });
+		M.FormSelect.init(select2.current, { classes: "capitalize" });
+		M.FormSelect.init(selectSize.current, { classes: "capitalize" });
+	};
+
 	const goBackToItems = () => {
 		props.history.push("/all-items");
 	};
 
 	useEffect(() => {
+		M.FormSelect.init(select.current, { classes: "capitalize" });
+		M.FormSelect.init(select2.current, { classes: "capitalize" });
+		M.FormSelect.init(selectSize.current, { classes: "capitalize" });
+
 		if (current !== null) {
 			M.Modal.init(modal.current);
 			setItem(current);
 			setImage(current.imageUrl);
+			setSelectedSizes({ value: current.sizes });
 		}
 		getCategories();
 
@@ -58,17 +88,20 @@ const AddUpdateItem = props => {
 
 	//const [isValid, setIsvalid] = useState(false);
 
-	const setValue = e => {
+	const setValue = (e) => {
 		setItem({ ...item, [e.target.name]: e.target.value });
 		console.log(item.category);
 	};
 
-	const handleImage = async e => {
+	const handleImage = async (e) => {
 		const image = e.target.files[0];
 		setImage(image);
 	};
 
-	const onSubmit = async e => {
+	const goBack = () => {
+		props.history.goBack();
+	};
+	const onSubmit = async (e) => {
 		e.preventDefault();
 
 		if (current !== null) {
@@ -80,7 +113,9 @@ const AddUpdateItem = props => {
 				price: parseFloat(item.price),
 				category: item.category,
 				imageUrl: image,
-				available: true
+				sizes: selectedSizes.value,
+				available: true,
+				quantity: 1,
 			};
 
 			updateItem(updated);
@@ -90,7 +125,7 @@ const AddUpdateItem = props => {
 					price: "",
 					description: "",
 					category: "",
-					available: true
+					available: true,
 				});
 				M.toast({ html: "Item has been updated!", classes: "green lighten-2" });
 				setImage("");
@@ -104,7 +139,9 @@ const AddUpdateItem = props => {
 				price: parseFloat(item.price),
 				category: item.category,
 				imageUrl: image,
-				available: true
+				available: true,
+				quantity: 1,
+				sizes: selectedSizes.value,
 			};
 
 			addItem(added);
@@ -115,8 +152,9 @@ const AddUpdateItem = props => {
 					price: "",
 					description: "",
 					category: "",
-					available: true
+					available: true,
 				});
+				setSelectedSizes({ value: [] });
 				M.toast({ html: "Item has been added!", classes: "blue-grey" });
 				setImage("");
 			}
@@ -135,13 +173,16 @@ const AddUpdateItem = props => {
 		}
 	};
 
-	const handleUploadSuccess = filename => {
+	const handleUploadSuccess = (filename) => {
 		storage
 			.ref("images")
 			.child(filename)
 			.getDownloadURL()
-			.then(url => setImage(url));
+			.then((url) => setImage(url));
 	};
+	// if (loading) {
+	// 	return <Loader />
+	// }
 
 	if (categories.length === 0) {
 		return (
@@ -180,7 +221,7 @@ const AddUpdateItem = props => {
 									style={{
 										float: "right",
 										marginTop: "20px",
-										marginRight: "20px"
+										marginRight: "20px",
 									}}
 									className={`btn ${current.available ? "orange" : "green"}`}
 								>
@@ -215,9 +256,24 @@ const AddUpdateItem = props => {
 							</div>
 
 							<div>
-								<h3 className="card-title bold">
-									{current ? "Update Item" : "Add Item"}
-								</h3>
+								<div className="row">
+									<div className="col s8">
+										<h3 className="card-title bold">
+											{current ? "Update Item" : "Add Item"}
+										</h3>
+									</div>
+									{!current ? (
+										<div className="col">
+											<button
+												className="btn waves-effect secondary"
+												onClick={goBack}
+											>
+												Go Back
+												<i className="material-icons right">arrow_back</i>
+											</button>
+										</div>
+									) : null}
+								</div>
 							</div>
 
 							<div className="form">
@@ -229,6 +285,7 @@ const AddUpdateItem = props => {
 												style={{ textTransform: "capitalize" }}
 												type="text"
 												name="name"
+												onBlur={resetSelectFields}
 												required
 												value={item.name}
 												onChange={setValue}
@@ -266,7 +323,7 @@ const AddUpdateItem = props => {
 												className="validate"
 											/>
 											<label className="active" htmlFor="price">
-												Price
+												Price for the small size
 											</label>
 										</div>
 
@@ -293,16 +350,17 @@ const AddUpdateItem = props => {
 											/>
 										</div>
 									</div>
+
 									<div className="input-field col s12">
 										<select
-											className="browser-default"
+											ref={select}
 											value={item.category}
 											name="category"
 											onChange={setValue}
 										>
 											<option value="">Choose a category</option>
 
-											{categories.map(category => (
+											{categories.map((category) => (
 												<option
 													style={{ textTransform: "capitalize" }}
 													onChange={setValue}
@@ -314,6 +372,32 @@ const AddUpdateItem = props => {
 											))}
 										</select>
 									</div>
+									<div className="input-field col s12">
+										<select
+											ref={selectSize}
+											name="size"
+											value={selectedSizes.value}
+											onChange={sizeHandler}
+											className="capitalize"
+											placeholder="Please select all the seizes this product come in."
+											multiple
+										>
+											<option value="" disabled>
+												Pick Sizes
+											</option>
+
+											{SIZES.map((size, i) => (
+												<option
+													style={{ textTransform: "capitalize" }}
+													key={i}
+													value={size.size}
+												>
+													{size.size}
+												</option>
+											))}
+										</select>
+									</div>
+
 									<div className="submit-btn">
 										<button
 											type="submit"
@@ -321,6 +405,18 @@ const AddUpdateItem = props => {
 										>
 											{current ? "Update Item" : "Add Item"}
 										</button>
+										{current ? (
+											<button
+												style={{ marginLeft: "20px" }}
+												className="waves-effect waves-light btn btn-block orange"
+												onClick={(e) => {
+													e.preventDefault();
+													props.history.replace("/all-items");
+												}}
+											>
+												Cancel
+											</button>
+										) : null}
 									</div>
 								</form>
 							</div>
