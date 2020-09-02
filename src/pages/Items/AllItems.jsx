@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useContext } from "react";
 
 import Item from "../../components/Item";
@@ -10,6 +11,8 @@ import { Loader } from "../../components/Loader";
 import { CategoriesList } from "../../components/CategoriesList";
 import SearchItem from "../../components/SearchItem";
 import { Link } from "react-router-dom";
+
+import "./AllItems.css";
 
 const AllItems = ({ match }) => {
 	const itemsContext = useContext(ItemsContext);
@@ -62,11 +65,11 @@ const AllItems = ({ match }) => {
 		<div style={{ width: "95%", margin: "0 auto" }} className="main-container">
 			<SearchItem />
 			<br />
-			<div className="row">
-				<div className="col s12 m2">
+			<div className="main">
+				<div className="categories">
 					<CategoriesList handlerFilters={handlerFilters} />
 				</div>
-				<div className="col s12 m10">
+				<div className="items">
 					<div className="flex">
 						{!filtered ? (
 							items.map((item) => {

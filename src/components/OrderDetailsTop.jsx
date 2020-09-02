@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { withRouter } from "react-router-dom";
-import Axios from "axios";
+
+import SendNotification from "../utils/SendNotification";
 
 const OrderDetailsTop = (props) => {
 	const { order, changeStatus, history } = props;
@@ -19,7 +20,6 @@ const OrderDetailsTop = (props) => {
 
 		//eslint-disable-next-line
 	}, [status]);
-	console.log(status);
 
 	const handleStatus = async () => {
 		if (newStatus !== "") {
@@ -29,21 +29,13 @@ const OrderDetailsTop = (props) => {
 		}
 
 		if (newStatus === "delivered") {
-			try {
-				const result = Axios.post(
-					"https://us-central1-grocery-409ef.cloudfunctions.net/sendNotification/sendNotification",
-					{
-						title: "Congratulations!",
-						body: "Your order is on its way!",
-						data: order,
-						userId: order.userId,
-					}
-				);
-
-				console.log((await result).data);
-			} catch (error) {
-				console.log(error.data);
-			}
+			// send notification to user when order is delivered
+			//@params { title = string, body = string, order = object}
+			SendNotification(
+				`Congratulations ${order.customer.name}!`,
+				"Your order is on its way!",
+				order
+			);
 		}
 	};
 

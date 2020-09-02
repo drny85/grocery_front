@@ -81,6 +81,18 @@ const ItemsState = (props) => {
 		dispatch({ type: FILTER_ITEMS_BY_CATEGORY, payload: text });
 	};
 
+	const setCurrentItem = async (id) => {
+		try {
+			setLoading();
+			const result = await db.collection("items").doc(id).get();
+			const data = { id: result.id, ...result.data() };
+
+			dispatch({ type: SET_CURRENT_ITEM, payload: data });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const clearItemsFilters = () => {
 		setLoading();
 		dispatch({ type: CLEAR_ITEMS_FILTERS });
@@ -141,6 +153,7 @@ const ItemsState = (props) => {
 				clearCurrent,
 				updateItem,
 				deleteItem,
+				setCurrentItem,
 				changeAvailability,
 			}}
 		>

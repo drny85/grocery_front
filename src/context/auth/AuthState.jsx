@@ -29,7 +29,7 @@ const AuthState = (props) => {
 		if (u) {
 			dispatch({
 				type: LOGIN,
-				payload: { userId: u.userId, email: user.email, name: u.name },
+				payload: u,
 			});
 		}
 	};
@@ -55,7 +55,6 @@ const AuthState = (props) => {
 	};
 
 	const setUser = async (user) => {
-		console.log("USER:", user);
 		try {
 			setLoading();
 			await db.collection("users").doc(user.uid).set({
@@ -63,14 +62,19 @@ const AuthState = (props) => {
 				email: user.email,
 				name: user.name,
 				lastName: user.lastname,
+				createdAt: new Date().toISOString(),
+				isAdmin: false,
+				isActive: false,
 			});
-			console.log('SET')
+
+			const newUser = await db.collection("users").doc(user.id).get();
+			const createdUser = { userId: newUser.id, ...newUser.data() };
+
+			console.log("Created", createdUser);
+
 			dispatch({
 				type: LOGIN,
-				payload: {
-					userId: user.uid,
-					email: user.email,
-				},
+				payload: createdUser,
 			});
 		} catch (error) {
 			setError(error.message);

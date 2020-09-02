@@ -27,7 +27,7 @@ import NotificationSate from "./context/notifications/NotificationState";
 import OrderDetails from "./pages/orders/OrderDetails";
 import AddonsState from "./context/addons/AddonsState";
 import AddUpdateAddons from "./pages/addons/AddUpdateAddons";
-
+import AdminRoute from "./components/AdminRoute";
 
 const App = () => {
 	const authContext = React.useContext(AuthContext);
@@ -59,8 +59,13 @@ const App = () => {
 											<Navbar />
 
 											<div className="">
-												<PrivateRoute exact path="/" component={Home} />
-												<PrivateRoute path="/item" component={AddUpdateItem} />
+												<AdminRoute exact path="/item" component={AddUpdateItem} />
+												<AdminRoute
+													exact
+													path="/item/:id"
+													component={AddUpdateItem}
+												/>
+
 												<PrivateRoute path="/all-items" component={AllItems} />
 												<PrivateRoute
 													path="/add-category"
@@ -70,11 +75,11 @@ const App = () => {
 													path="/categories"
 													component={AllCategories}
 												/>
-												<PrivateRoute
+												<AdminRoute
 													path="/category/:id"
 													component={EditCategory}
 												/>
-												<PrivateRoute
+												<AdminRoute
 													path="/addons"
 													component={AddUpdateAddons}
 												/>
@@ -84,6 +89,7 @@ const App = () => {
 													component={OrderDetails}
 												/>
 												<Route path="/signup" component={Signup} />
+												<PrivateRoute exact path="/" component={Home} />
 											</div>
 										</Fragment>
 									</Switch>

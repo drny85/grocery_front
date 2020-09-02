@@ -57,7 +57,7 @@ const CategoryState = (props) => {
 	const getCategories = async () => {
 		try {
 			setLoading();
-			const snapshot = await db.collection("categories").get();
+			const snapshot = await db.collection("categories").get()
 			const temp = snapshot.docs.map((doc) => {
 				return {
 					id: doc.id,

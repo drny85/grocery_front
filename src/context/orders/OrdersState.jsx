@@ -6,22 +6,23 @@ import {
 	SET_CURRENT_ITEM,
 	CLEAR_CURRENT_ITEM,
 	CHANGE_STATUS,
-	ORDERS_COUNT
+	ORDERS_COUNT,
+	SEARCH_ORDERS,
 } from "../types";
 import React, { useReducer } from "react";
 import OrdersReducer from "./ordersReducer";
 import OrdersContext from "./ordersContext";
 import { db } from "../../services/firebase";
 
-const OrdersState = props => {
+const OrdersState = (props) => {
 	const initialState = {
 		orders: [],
 		current: null,
-		filtered: null,
+		filtered: [],
 		loading: false,
 		delivered: 0,
 		in_progress: 0,
-		_new: 0
+		_new: 0,
 	};
 
 	const ordersRef = db.collection("orders");
@@ -31,7 +32,7 @@ const OrdersState = props => {
 	// @ts-ignore
 	const setLoading = () => dispatch({ type: SET_LOADING });
 
-	const getOrder = async orderId => {
+	const getOrder = async (orderId) => {
 		setLoading();
 		const order = await ordersRef.doc(orderId).get();
 		dispatch({ type: GET_ORDER, payload: { id: order.id, ...order.data() } });
@@ -42,12 +43,12 @@ const OrdersState = props => {
 		setLoading();
 		listener = await ordersRef
 			.orderBy("orderPlaced", "desc")
-			.onSnapshot(values => {
+			.onSnapshot((values) => {
 				let orders = [];
-				values.forEach(doc => {
+				values.forEach((doc) => {
 					let order = {
 						id: doc.id,
-						...doc.data()
+						...doc.data(),
 					};
 					orders.push(order);
 				});
@@ -59,10 +60,9 @@ const OrdersState = props => {
 
 	const changeStatus = async (id, status) => {
 		try {
-			console.log(id, status);
 			setLoading();
 			await ordersRef.doc(id).update({
-				status
+				status,
 			});
 
 			dispatch({ type: CHANGE_STATUS, payload: { id, status } });
@@ -71,13 +71,17 @@ const OrdersState = props => {
 		}
 	};
 
-	const setCurrentOrder = async id => {
+	const setOrderFilter = () => dispatch({ type: "SET" });
+
+	const clearOrderFilter = () => dispatch({ type: "SET_CLEAR" });
+
+	const setCurrentOrder = async (id) => {
 		try {
 			setLoading();
-			await ordersRef.doc(id).onSnapshot(order =>
+			await ordersRef.doc(id).onSnapshot((order) =>
 				dispatch({
 					type: SET_CURRENT_ITEM,
-					payload: { id: order.id, ...order.data() }
+					payload: { id: order.id, ...order.data() },
 				})
 			);
 		} catch (error) {
@@ -88,6 +92,10 @@ const OrdersState = props => {
 
 	const calculateOrderCounts = () => {
 		dispatch({ type: ORDERS_COUNT });
+	};
+
+	const filterOrders = (params) => {
+		dispatch({ type: SEARCH_ORDERS, payload: params });
 	};
 
 	//names subscription;
@@ -112,7 +120,10 @@ const OrdersState = props => {
 				getOrder,
 				clearCurrent,
 				changeStatus,
-				stopListening
+				stopListening,
+				filterOrders,
+				setOrderFilter,
+				clearOrderFilter,
 			}}
 		>
 			{props.children}

@@ -6,6 +6,7 @@ import {
 	CLEAR_CURRENT_ITEM,
 	CHANGE_STATUS,
 	ORDERS_COUNT,
+	SEARCH_ORDERS,
 } from "../types";
 
 export default (state, action) => {
@@ -71,6 +72,37 @@ export default (state, action) => {
 				orders: [...action.payload],
 				loading: false,
 				error: false,
+			};
+
+		case "SET":
+			return {
+				...state,
+				loading: false,
+				filtered: [...state.orders],
+			};
+
+		case "SET_CLEAR":
+			return {
+				...state,
+				filtered: [],
+				loading: false,
+			};
+		case SEARCH_ORDERS:
+			return {
+				...state,
+				filtered: state.filtered.filter((order) => {
+					const regex = new RegExp(`${action.payload}`, "gi");
+
+					return order.orderType === "delivery"
+						? order.customer.name.match(regex) ||
+								order.customer.lastName.match(regex) ||
+								order.customer.phone.match(regex) ||
+								order.customer.address.street.match(regex)
+						: order.customer.name.match(regex) ||
+								order.customer.lastName.match(regex) ||
+								order.customer.phone.match(regex);
+				}),
+				loading: false,
 			};
 
 		default:

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { storage } from "../../services/firebase";
 import FileUploader from "react-firebase-file-uploader";
@@ -5,6 +6,9 @@ import M from "materialize-css/dist/js/materialize.min.js";
 import ItemsContext from "../../context/items/itemsContext";
 import CategoryContext from "../../context/category/categoryContext";
 import { withRouter, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+import { Loader } from "../../components/Loader";
 
 const SIZES = [
 	{ size: "small" },
@@ -16,13 +20,15 @@ const SIZES = [
 const AddUpdateItem = (props) => {
 	const itemsContext = useContext(ItemsContext);
 	const categoryContext = useContext(CategoryContext);
-	const { categories, getCategories } = categoryContext;
+	const { categories, getCategories, loading } = categoryContext;
+	const { id } = useParams();
 
 	const {
 		addItem,
 		current,
 		updateItem,
 		clearCurrent,
+		setCurrentItem,
 		deleteItem,
 		changeAvailability,
 	} = itemsContext;
@@ -32,6 +38,8 @@ const AddUpdateItem = (props) => {
 	const selectSize = React.useRef();
 
 	const [selectedSizes, setSelectedSizes] = useState({ value: [] });
+	const [price, setPrice] = useState({});
+	const [singlePrice, setSinglePrice] = useState("");
 
 	const sizeHandler = (e) => {
 		setSelectedSizes({
@@ -44,6 +52,7 @@ const AddUpdateItem = (props) => {
 		description: "",
 		price: "",
 		category: "",
+
 		available: true,
 	});
 
@@ -62,24 +71,47 @@ const AddUpdateItem = (props) => {
 		props.history.push("/all-items");
 	};
 
+	const handlePrices = (e, index) => {
+		setPrice({
+			...item.price,
+			[item.sizes[index]]: parseFloat(e.target.value),
+		});
+	};
+
+	useEffect(() => {
+		if (id) {
+			setCurrentItem(id);
+		}
+		return () => {
+			clearCurrent();
+		};
+		// eslint-disable-next-line
+	}, []);
+
 	useEffect(() => {
 		M.FormSelect.init(select.current, { classes: "capitalize" });
 		M.FormSelect.init(select2.current, { classes: "capitalize" });
 		M.FormSelect.init(selectSize.current, { classes: "capitalize" });
+		console.log("THERE");
 
-		if (current !== null) {
+		if (current !== null && id !== null) {
 			M.Modal.init(modal.current);
 			setItem(current);
 			setImage(current.imageUrl);
-			setSelectedSizes({ value: current.sizes });
+			if (current.sizes) {
+				setSelectedSizes({ value: current.sizes });
+				setPrice({ ...current.price });
+			} else {
+				setSinglePrice(current.price);
+			}
 		}
 		getCategories();
 
 		return () => {
-			clearCurrent();
+			//clearCurrent();
+			console.log("clear");
 		};
-
-		//eslint-disable-next-line
+		// eslint-disable-next-line
 	}, [current]);
 
 	const [image, setImage] = useState("");
@@ -90,7 +122,6 @@ const AddUpdateItem = (props) => {
 
 	const setValue = (e) => {
 		setItem({ ...item, [e.target.name]: e.target.value });
-		console.log(item.category);
 	};
 
 	const handleImage = async (e) => {
@@ -110,10 +141,10 @@ const AddUpdateItem = (props) => {
 				id: current.id,
 				name: item.name,
 				description: item.description,
-				price: parseFloat(item.price),
+				price: selectedSizes.value.length > 0 ? price : parseFloat(singlePrice),
 				category: item.category,
 				imageUrl: image,
-				sizes: selectedSizes.value,
+				sizes: selectedSizes.value.length > 0 ? selectedSizes.value : null,
 				available: true,
 				quantity: 1,
 			};
@@ -136,12 +167,12 @@ const AddUpdateItem = (props) => {
 			const added = {
 				name: item.name,
 				description: item.description,
-				price: parseFloat(item.price),
+				price: setSelectedSizes.length > 0 ? parseFloat(price) : parseFloat(singlePrice),
 				category: item.category,
 				imageUrl: image,
 				available: true,
 				quantity: 1,
-				sizes: selectedSizes.value,
+				sizes: selectedSizes.value.length > 0 ? selectedSizes : null,
 			};
 
 			addItem(added);
@@ -155,6 +186,8 @@ const AddUpdateItem = (props) => {
 					available: true,
 				});
 				setSelectedSizes({ value: [] });
+				setPrice({});
+				clearCurrent();
 				M.toast({ html: "Item has been added!", classes: "blue-grey" });
 				setImage("");
 			}
@@ -204,6 +237,8 @@ const AddUpdateItem = (props) => {
 		);
 	}
 
+	if (loading) return <Loader />;
+
 	return (
 		<div className="container">
 			<br />
@@ -214,7 +249,7 @@ const AddUpdateItem = (props) => {
 					}
 				>
 					<div className="card">
-						{current ? (
+						{current && !loading ? (
 							<>
 								<button
 									onClick={handleAvailability}
@@ -287,7 +322,8 @@ const AddUpdateItem = (props) => {
 												name="name"
 												onBlur={resetSelectFields}
 												required
-												value={item.name}
+												autoFocus={true}
+												value={item?.name}
 												onChange={setValue}
 												className="validate"
 											/>
@@ -300,7 +336,7 @@ const AddUpdateItem = (props) => {
 												id="description"
 												type="text"
 												name="description"
-												value={item.description}
+												value={item?.description}
 												required
 												onChange={setValue}
 												className="validate"
@@ -309,22 +345,30 @@ const AddUpdateItem = (props) => {
 												Description
 											</label>
 										</div>
+										<div className="input-field col s12">
+											<select
+												ref={selectSize}
+												name="size"
+												value={selectedSizes.value}
+												onChange={sizeHandler}
+												className="capitalize"
+												placeholder="Please select all the sizes this product come in."
+												multiple
+											>
+												<option value="" disabled>
+													Pick Sizes
+												</option>
 
-										<div className="input-field">
-											<input
-												id="price"
-												type="number"
-												name="price"
-												value={item.price}
-												step="0.01"
-												required
-												onChange={setValue}
-												min="0"
-												className="validate"
-											/>
-											<label className="active" htmlFor="price">
-												Price for the small size
-											</label>
+												{SIZES.map((size, i) => (
+													<option
+														style={{ textTransform: "capitalize" }}
+														key={i}
+														value={size.size}
+													>
+														{size.size}
+													</option>
+												))}
+											</select>
 										</div>
 
 										<div className="file-field input-field">
@@ -350,53 +394,73 @@ const AddUpdateItem = (props) => {
 											/>
 										</div>
 									</div>
+									{categories.length > 0 && (
+										<div className="input-field col s12">
+											<select
+												ref={select}
+												value={item?.category}
+												name="category"
+												onChange={setValue}
+											>
+												<option value="">Choose a category</option>
 
-									<div className="input-field col s12">
-										<select
-											ref={select}
-											value={item.category}
-											name="category"
-											onChange={setValue}
-										>
-											<option value="">Choose a category</option>
+												{categories.map((category) => (
+													<option
+														style={{ textTransform: "capitalize" }}
+														onChange={setValue}
+														key={category.id}
+														value={category.id}
+													>
+														{category.name}
+													</option>
+												))}
+											</select>
+										</div>
+									)}
 
-											{categories.map((category) => (
-												<option
-													style={{ textTransform: "capitalize" }}
-													onChange={setValue}
-													key={category.id}
-													value={category.id}
-												>
-													{category.name}
-												</option>
-											))}
-										</select>
-									</div>
-									<div className="input-field col s12">
-										<select
-											ref={selectSize}
-											name="size"
-											value={selectedSizes.value}
-											onChange={sizeHandler}
-											className="capitalize"
-											placeholder="Please select all the seizes this product come in."
-											multiple
-										>
-											<option value="" disabled>
-												Pick Sizes
-											</option>
-
-											{SIZES.map((size, i) => (
-												<option
-													style={{ textTransform: "capitalize" }}
-													key={i}
-													value={size.size}
-												>
-													{size.size}
-												</option>
-											))}
-										</select>
-									</div>
+									{/* handle prices based on size */}
+									{selectedSizes.value.length > 0
+										? selectedSizes.value.map((p, index) => (
+												<div key={index} className="input-field col s12">
+													<input
+														id="price"
+														type="number"
+														name="price"
+														value={
+															item.sizes !== null
+																? price[selectedSizes.value[index]]
+																: item.price[item.sizes[index]]
+														}
+														step="0.01"
+														required
+														onChange={(e) => handlePrices(e, index)}
+														min="0"
+														className="validate"
+													/>
+													<label className="active" htmlFor="price">
+														Price for the {selectedSizes.value[index]} size
+													</label>
+												</div>
+										  ))
+										: null}
+									{selectedSizes.value.length === 0 && (
+										<div className="input-field col s12">
+											<input
+												id="price"
+												type="number"
+												name="singlePrice"
+												value={singlePrice}
+												step="0.01"
+												required
+												onChange={(e) => setSinglePrice(e.target.value)}
+												min="0"
+												className="validate"
+											/>
+											<label className="active" htmlFor="price">
+												Price
+											</label>
+										</div>
+									)}
 
 									<div className="submit-btn">
 										<button
@@ -446,10 +510,31 @@ const AddUpdateItem = (props) => {
 								{item.price === "" ? null : (
 									<div className="card-action">
 										<h6 style={{ fontSize: "2.1rem", fontWeight: "bold" }}>
-											$ {item.price}
+											$ {item.sizes ? item.price[item.sizes[0]] : item.price}
 										</h6>
 									</div>
 								)}
+								{item.sizes ? (
+									<span style={{ paddingLeft: "20px" }}>
+										Sizes:{" "}
+										{item.sizes
+											? item.sizes.map((i, index) => (
+													<p
+														style={{
+															display: "inline-block",
+															paddingRight: "0.3rem",
+
+															fontWeight: "bold",
+															textTransform: "capitalize",
+														}}
+														key={index}
+													>
+														{i[0]}
+													</p>
+											  ))
+											: null}
+									</span>
+								) : null}
 							</div>
 						</div>
 					</div>
@@ -459,4 +544,4 @@ const AddUpdateItem = (props) => {
 	);
 };
 
-export default withRouter(AddUpdateItem);
+export default withRouter(React.memo(AddUpdateItem));

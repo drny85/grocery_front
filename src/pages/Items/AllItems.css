@@ -1,6 +1,52 @@
 .flex {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    background-color: blue;
+
+}
+
+.links:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.main {
+    display: flex;
+    position: relative;
+    flex: 1
+}
+.main .categories {
+    flex: 0.2
+}
+.main .items {
+    flex: 0.8
+}
+
+
+.links {
+    transition: background-color 200ms ease-in, transform 250ms ease-in-out;
+}
+
+.main-container {
+    min-width: 800px !important;
+}
+
+@media only screen and (max-width: 980px) {
+    .flex {
+
+        grid-template-columns: repeat(2, 1fr);
+
+    }
+
+}
+
+
+
+@media only screen and (max-width: 560px) {
+    .flex {
+
+        grid-template-columns: repeat(1, 1fr);
+
+    }
 
 }

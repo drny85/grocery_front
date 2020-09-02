@@ -1,0 +1,6 @@
+.datepicker::placeholder {
+    color: rgb(160, 147, 142);
+    font-style: italic;
+    margin-left: 10px;
+}
+

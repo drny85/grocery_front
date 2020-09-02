@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import AuthContext from "../context/auth/authContext";
 
-const Navbar = props => {
+const Navbar = (props) => {
 	const authContext = React.useContext(AuthContext);
 	const { user, isAuthenticated } = authContext;
 	const logout = () => {
@@ -10,12 +10,45 @@ const Navbar = props => {
 		props.history.replace("/signup");
 	};
 
+	const adminRoute = (user) => {
+		if (user.isAdmin && user.isActive) {
+			return (
+				<>
+					<li className="nav-item" data-toggle="collapse">
+						<NavLink className="nav-link" activeClassName="current" to="/item">
+							Add Item
+						</NavLink>
+					</li>
+
+					<li className="nav-item" data-toggle="collapse">
+						<NavLink
+							className="nav-link"
+							activeClassName="current"
+							to="/add-category"
+						>
+							Add Category
+						</NavLink>
+					</li>
+					<li className="nav-item" data-toggle="collapse">
+						<NavLink
+							className="nav-link"
+							activeClassName="current"
+							to="/addons"
+						>
+							Addons
+						</NavLink>
+					</li>
+				</>
+			);
+		}
+	};
+
 	return (
 		<div className="navbar-fixed">
 			<nav className="bg-light secondary">
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<ul className="navbar-nav mr-auto">
-						{isAuthenticated ? (
+						{isAuthenticated && user.isActive ? (
 							<>
 								<li className="nav-item" data-toggle="collapse">
 									<NavLink
@@ -27,15 +60,7 @@ const Navbar = props => {
 										Home <span className="sr-only"></span>
 									</NavLink>
 								</li>
-								<li className="nav-item" data-toggle="collapse">
-									<NavLink
-										className="nav-link"
-										activeClassName="current"
-										to="/item"
-									>
-										Add Item
-									</NavLink>
-								</li>
+
 								<li className="nav-item" data-toggle="collapse">
 									<NavLink
 										className="nav-link"
@@ -45,24 +70,8 @@ const Navbar = props => {
 										All Items
 									</NavLink>
 								</li>
-								<li className="nav-item" data-toggle="collapse">
-									<NavLink
-										className="nav-link"
-										activeClassName="current"
-										to="/add-category"
-									>
-										Add Category
-									</NavLink>
-								</li>
-								<li className="nav-item" data-toggle="collapse">
-									<NavLink
-										className="nav-link"
-										activeClassName="current"
-										to="/addons"
-									>
-										Addons
-									</NavLink>
-								</li>
+								{adminRoute(user)}
+
 								<li className="nav-item" data-toggle="collapse">
 									<NavLink
 										className="nav-link"

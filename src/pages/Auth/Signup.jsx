@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AuthContext from "../../context/auth/authContext";
 import Alerts from "../../components/Alerts";
 import AlertContext from "../../context/alerts/alertContext";
@@ -25,18 +25,15 @@ const Signup = (props) => {
 		setLogin,
 		user,
 		error,
-		isAthenticated,
-		isLoading,
+		isAuthenticated,
 	} = authContext;
 
-	console.log(isLoading);
-
-	React.useEffect(() => {
+	useEffect(() => {
 		if (user) {
 			props.history.replace("/orders");
 		}
 		//eslint-disable-next-line
-	}, [isAthenticated, props.history, error]);
+	}, [isAuthenticated, props.history, error]);
 
 	const setValue = (e) => {
 		setAccount({ ...account, [e.target.name]: e.target.value });
@@ -63,7 +60,7 @@ const Signup = (props) => {
 			} else {
 				try {
 					const u = await signup(account.email, account.password);
-					console.log(u.user);
+					
 					setUser({
 						uid: u.user.uid,
 						name: account.name,

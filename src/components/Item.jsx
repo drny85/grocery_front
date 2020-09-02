@@ -1,43 +1,59 @@
-import React, {useContext} from "react";
-import ItemContext from '../context/items/itemsContext';
-import {
-	withRouter
-  } from 'react-router-dom'
+import React from "react";
 
-const Item = ({item, history}) => {
+import { withRouter } from "react-router-dom";
+import { useContext } from "react";
+import authContext from "../context/auth/authContext";
 
-	
-	
-	const itemContex = useContext(ItemContext);
-	const {setCurrent} = itemContex;
+const Item = ({ item, history }) => {
+	const { user } = useContext(authContext);
 	const navigateToItem = () => {
-		setCurrent(item);
-		history.push('/item')
-	}
+		history.push(`/item/${item.id}`);
+	};
 	return (
 		<div className="card medium">
-			<div className="card-image">
-				<img style={{minHeight: "280px", height: "auto"}} src={item.imageUrl} alt="" />
-				<span className="card-title bold capitalize" style={{color: 'black'}}>{item.name}</span>
+			<div style={{ height: "100%" }} className="card-image">
+				<img
+					style={{ minHeight: "280px", height: "auto" }}
+					src={item.imageUrl}
+					alt=""
+				/>
+				<span className="card-title bold capitalize" style={{ color: "black" }}>
+					{item.name}
+				</span>
 			</div>
-			<div className="card-content">
-				<p style={{textTransform: "capitalize"}}>{item.description}</p>
+			<div
+				style={{ minHeight: "2rem", height: "2rem" }}
+				className="card-content"
+			>
+				<p style={{ textTransform: "capitalize" }}>{item.description}</p>
 			</div>
 			<div className="card-action">
 				<div className="row">
-					<div className="col m7">
-					<p style={{fontWeight:"bold", fontSize: "1.5rem"}}>$ {item.price}</p>
+					<div className="col m9">
+						<p style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+							{item.sizes
+								? `As low as $${item.price[item.sizes[0]]}`
+								: item.price}
+						</p>
 					</div>
-					<div className="col m5">
+					<div className="col m3">
 						{item.available ? (
-							<p style={{color: 'green'}}>Available  <i className="material-icons">check</i></p>
-						) : (<p style={{color: 'red'}}>Not Available  <i className="material-icons">close</i></p>)}
+							<p style={{ color: "green" }}>
+								Available <i className="material-icons">check</i>
+							</p>
+						) : (
+							<p style={{ color: "red" }}>
+								Not Available <i className="material-icons">close</i>
+							</p>
+						)}
 					</div>
-					<br/>
-					<button onClick={navigateToItem} className="btn orange">Edit <i className="material-icons right">edit</i></button>
-
+					<br />
+					{user.isAdmin && (
+						<button onClick={navigateToItem} className="btn orange">
+							Edit <i className="material-icons right">edit</i>
+						</button>
+					)}
 				</div>
-				
 			</div>
 		</div>
 	);

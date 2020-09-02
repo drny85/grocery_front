@@ -16,8 +16,11 @@ code {
 
 .flex {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 1.5rem;
+
+
+
 }
 
 
@@ -47,6 +50,10 @@ a.current {
   background-color: burlywood;
   height: 200px;
 
+}
+
+.card {
+  min-width: 200px !important;
 }
 
 .mr-8 {
@@ -152,3 +159,11 @@ a.current {
   border-radius: 50px !important;
 }
 
+/* @media only screen and (min-width: 800px) {
+  .flex {
+
+    grid-template-columns: repeat(4, 1fr);
+
+  }
+
+} */

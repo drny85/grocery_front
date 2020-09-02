@@ -1,0 +1,23 @@
+.orderSearch {
+    background-color: rgb(247, 240, 240);
+    width: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.orderSearch input {
+    outline: none !important;
+    border: none !important;
+    text-align: center;
+    font-size: 1.3rem;
+
+
+}
+
+.orderSearch input::placeholder {
+    text-align: center;
+    color: rgb(116, 105, 105);
+    font-weight: 600;
+    font-size: 1.5rem;
+    font-style: italic;
+}

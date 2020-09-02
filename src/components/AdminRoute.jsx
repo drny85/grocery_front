@@ -5,7 +5,7 @@ import AuthContext from "../context/auth/authContext";
 import Signup from "../pages/Auth/Signup";
 import { Loader } from "./Loader";
 
-const PrivatedRoute = ({ component: Component, ...rest }) => {
+const AdminRoute = ({ component: Component, ...rest }) => {
 	const authContext = React.useContext(AuthContext);
 	const { isAuthenticated, isLoading, user } = authContext;
 
@@ -17,7 +17,7 @@ const PrivatedRoute = ({ component: Component, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) => {
-				if (isAuthenticated && !isLoading && isActive) {
+				if (isAuthenticated && !isLoading && isActive && isAdmin) {
 					return <Component {...props} />;
 				} else {
 					return <Redirect to="/login" />;
@@ -27,4 +27,4 @@ const PrivatedRoute = ({ component: Component, ...rest }) => {
 	);
 };
 
-export default PrivatedRoute;
+export default AdminRoute;

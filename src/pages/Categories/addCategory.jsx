@@ -30,6 +30,7 @@ export const AddCategory = () => {
 
 	const [isValid, setIsValid] = useState(true);
 
+	
 
 	//REFS
 	const modal = React.useRef();

@@ -25,6 +25,8 @@ export const SET_ALERT = "SET_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
 export const LOGIN = "LOGIN";
 
+export const SEARCH_ORDERS = "SEARCH_ORDERS";
+
 export const LOGOUT = "LOGOUT";
 export const AUTH_ERROR = "AUTH_ERROR";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -35,12 +37,12 @@ export const GET_NAMES = "GET_NAMES";
 
 export const REMOVE_NOTICATION = "REMOVE_NOTICATION";
 export const SET_NOTIFICATION = "SET_NOTIFICATION";
-export const CHANGE_STATUS= "CHANGE_STATUS";
+export const CHANGE_STATUS = "CHANGE_STATUS";
 export const ORDERS_COUNT = "ORDERS_COUNT";
 export const GET_ADDONS = "GET_ADDONS";
 export const ADD_ADDON = "ADD_ADDON";
 export const ADDON_ERROR = "ADD_ERROR";
-export const CLEAR_ADDON_ERROR ="CLEAR_ADDON_ERROR";
-export const CLEAR_ADDON ="CLEAR_ADDON";
-export const UPDATE_ADDON ="UPDATE_ADDON";
-export const SET_ADDON ="SET_ADDON";
+export const CLEAR_ADDON_ERROR = "CLEAR_ADDON_ERROR";
+export const CLEAR_ADDON = "CLEAR_ADDON";
+export const UPDATE_ADDON = "UPDATE_ADDON";
+export const SET_ADDON = "SET_ADDON";
