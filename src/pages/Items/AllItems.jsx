@@ -62,14 +62,16 @@ const AllItems = ({ match }) => {
 	}
 
 	return (
-		<div style={{ width: "95%", margin: "0 auto" }} className="main-container">
-			<SearchItem />
-			<br />
-			<div className="main">
-				<div className="categories">
+		<div className="all-items">
+			<div className="content_search">
+				<SearchItem />
+			</div>
+
+			<div className="content">
+				<div className="content_category">
 					<CategoriesList handlerFilters={handlerFilters} />
 				</div>
-				<div className="items">
+				<div className="content_items">
 					<div className="flex">
 						{!filtered ? (
 							items.map((item) => {
@@ -78,14 +80,40 @@ const AllItems = ({ match }) => {
 						) : filtered.length === 0 ? (
 							<h4 className="center">No Items Found </h4>
 						) : (
-							filtered.map((item) => {
-								return <Item key={item.id} item={item} />;
-							})
-						)}
+									filtered.map((item) => {
+										return <Item key={item.id} item={item} />;
+									})
+								)}
 					</div>
+
 				</div>
+
 			</div>
 		</div>
+		// <div style={{ width: "95%", margin: "0 auto" }} className="main-container">
+		// 	<SearchItem />
+		// 	<br />
+		// 	<div className="main">
+		// 		<div className="categories">
+		// 			<CategoriesList handlerFilters={handlerFilters} />
+		// 		</div>
+		// 		<div className="items">
+		// 			<div className="flex">
+		// 				{!filtered ? (
+		// 					items.map((item) => {
+		// 						return <Item key={item.id} item={item} />;
+		// 					})
+		// 				) : filtered.length === 0 ? (
+		// 					<h4 className="center">No Items Found </h4>
+		// 				) : (
+		// 							filtered.map((item) => {
+		// 								return <Item key={item.id} item={item} />;
+		// 							})
+		// 						)}
+		// 			</div>
+		// 		</div>
+		// 	</div>
+		// </div>
 	);
 };
 

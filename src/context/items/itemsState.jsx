@@ -39,12 +39,17 @@ const ItemsState = (props) => {
 
 				// @ts-ignore
 				dispatch({ type: ADD_ITEM, payload: t });
+
 			} else {
 				throw new Error("No data");
+
 			}
+
+			return true
 			// dispatch({type: ADD_ITEM, payload: })
 		} catch (error) {
 			console.log(error);
+			return false
 		}
 	};
 

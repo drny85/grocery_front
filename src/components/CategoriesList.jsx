@@ -7,9 +7,9 @@ export const CategoriesList = ({ handlerFilters }) => {
 	const { categories } = categoryContext;
 
 	return (
-		<div style={{ borderRadius: "12px", height: "100vh", position:'fixed' }} className="card fixed">
+		<div style={{ borderRadius: "12px", height: "100vh" }} className="card fixed">
 			<div
-				style={{ height: "8%", borderRadius: "12px", width: '15vw', minWidth: '100px' }}
+				style={{ borderRadius: "12px", width: '100%', minWidth: '100px', height: '6.5%' }}
 				onClick={handlerFilters}
 				className="card align-center"
 			>
@@ -19,9 +19,11 @@ export const CategoriesList = ({ handlerFilters }) => {
 					</h5>
 				</div>
 			</div>
-			{categories.map(category => (
-				<CategoryLink key={category.id} category={category} />
-			))}
-		</div>
+			{
+				categories.map(category => (
+					<CategoryLink key={category.id} category={category} />
+				))
+			}
+		</div >
 	);
 };

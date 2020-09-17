@@ -28,6 +28,7 @@ import OrderDetails from "./pages/orders/OrderDetails";
 import AddonsState from "./context/addons/AddonsState";
 import AddUpdateAddons from "./pages/addons/AddUpdateAddons";
 import AdminRoute from "./components/AdminRoute";
+import EditItem from "./pages/Items/EditItem";
 
 const App = () => {
 	const authContext = React.useContext(AuthContext);
@@ -59,12 +60,13 @@ const App = () => {
 											<Navbar />
 
 											<div className="">
-												<AdminRoute exact path="/item" component={AddUpdateItem} />
+
 												<AdminRoute
 													exact
 													path="/item/:id"
 													component={AddUpdateItem}
 												/>
+												<AdminRoute exact path="/item" component={AddUpdateItem} />
 
 												<PrivateRoute path="/all-items" component={AllItems} />
 												<PrivateRoute

@@ -91,7 +91,7 @@ const CategoryState = (props) => {
 	const updateCategory = async (category) => {
 		try {
 			setLoading();
-			console.log(category);
+			console.log('CATEGORY', category)
 			await db.collection("categories").doc(category.id).update(category);
 
 			dispatch({ type: UPDATE_CATEGORY, payload: category });

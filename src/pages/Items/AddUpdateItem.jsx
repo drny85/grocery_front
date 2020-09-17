@@ -73,8 +73,9 @@ const AddUpdateItem = (props) => {
 
 	const handlePrices = (e, index) => {
 		setPrice({
-			...item.price,
-			[item.sizes[index]]: parseFloat(e.target.value),
+			...price,
+			// [item.sizes[index]]: parseFloat(e.target.value),
+			[selectedSizes.value[index]]: parseFloat(e.target.value)
 		});
 	};
 
@@ -87,6 +88,7 @@ const AddUpdateItem = (props) => {
 		};
 		// eslint-disable-next-line
 	}, []);
+
 
 	useEffect(() => {
 		M.FormSelect.init(select.current, { classes: "capitalize" });
@@ -137,6 +139,7 @@ const AddUpdateItem = (props) => {
 
 		if (current !== null) {
 			// handle update item
+			console.log('UPDATED')
 			const updated = {
 				id: current.id,
 				name: item.name,
@@ -164,20 +167,30 @@ const AddUpdateItem = (props) => {
 				props.history.goBack();
 			}
 		} else {
+
+			if (image === '') {
+				M.toast({ html: "Please Select an Image", classes: "red lighten-2" });
+				return;
+			}
+			if (item.category === '') {
+				M.toast({ html: "Please Select a Category", classes: "red lighten-2" });
+				return;
+			}
+			const newPrice = selectedSizes.value.length > 0 ? price : parseFloat(singlePrice);
+
 			const added = {
 				name: item.name,
 				description: item.description,
-				price: setSelectedSizes.length > 0 ? parseFloat(price) : parseFloat(singlePrice),
+				price: newPrice,
 				category: item.category,
 				imageUrl: image,
 				available: true,
 				quantity: 1,
-				sizes: selectedSizes.value.length > 0 ? selectedSizes : null,
+				sizes: selectedSizes.value.length > 0 ? selectedSizes.value : null,
 			};
 
-			addItem(added);
-
-			if (added.id !== null) {
+			const submitted = await addItem(added);
+			if (submitted) {
 				setItem({
 					name: "",
 					price: "",
@@ -191,6 +204,22 @@ const AddUpdateItem = (props) => {
 				M.toast({ html: "Item has been added!", classes: "blue-grey" });
 				setImage("");
 			}
+
+			// if (added.id !== null) {
+			// 	setItem({
+			// 		name: "",
+			// 		price: "",
+			// 		description: "",
+			// 		category: "",
+			// 		available: true,
+			// 	});
+			// 	setSelectedSizes({ value: [] });
+			// 	setPrice({});
+			// 	clearCurrent();
+			// 	setSinglePrice('')
+			// 	M.toast({ html: "Item has been added!", classes: "blue-grey" });
+			// 	setImage("");
+			// }
 		}
 
 		// console.log(items);
@@ -421,27 +450,27 @@ const AddUpdateItem = (props) => {
 									{/* handle prices based on size */}
 									{selectedSizes.value.length > 0
 										? selectedSizes.value.map((p, index) => (
-												<div key={index} className="input-field col s12">
-													<input
-														id="price"
-														type="number"
-														name="price"
-														value={
-															item.sizes !== null
-																? price[selectedSizes.value[index]]
-																: item.price[item.sizes[index]]
-														}
-														step="0.01"
-														required
-														onChange={(e) => handlePrices(e, index)}
-														min="0"
-														className="validate"
-													/>
-													<label className="active" htmlFor="price">
-														Price for the {selectedSizes.value[index]} size
+											<div key={index} className="input-field col s12">
+												<input
+													id="price"
+													type="number"
+													name="price"
+													value={
+														item.sizes == null
+															? price[selectedSizes.value[index]]
+															: item.price[item.sizes[index]]
+													}
+													step="0.01"
+													required
+													onChange={(e) => handlePrices(e, index)}
+													min="0"
+													className="validate"
+												/>
+												<label className="active" htmlFor="price">
+													Price for the {selectedSizes.value[index]} size
 													</label>
-												</div>
-										  ))
+											</div>
+										))
 										: null}
 									{selectedSizes.value.length === 0 && (
 										<div className="input-field col s12">
@@ -519,19 +548,19 @@ const AddUpdateItem = (props) => {
 										Sizes:{" "}
 										{item.sizes
 											? item.sizes.map((i, index) => (
-													<p
-														style={{
-															display: "inline-block",
-															paddingRight: "0.3rem",
+												<p
+													style={{
+														display: "inline-block",
+														paddingRight: "0.3rem",
 
-															fontWeight: "bold",
-															textTransform: "capitalize",
-														}}
-														key={index}
-													>
-														{i[0]}
-													</p>
-											  ))
+														fontWeight: "bold",
+														textTransform: "capitalize",
+													}}
+													key={index}
+												>
+													{i[0]}
+												</p>
+											))
 											: null}
 									</span>
 								) : null}

@@ -13,7 +13,7 @@ export const CategoryLink = ({ category }) => {
 
 	return (
 		<div
-			style={{ height: "7%", borderRadius: "12px" }}
+			style={{ borderRadius: "12px", height: '6.5%' }}
 			onClick={handleFilters}
 			className={`card links align-center `}
 		>

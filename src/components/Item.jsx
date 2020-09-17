@@ -29,23 +29,23 @@ const Item = ({ item, history }) => {
 			</div>
 			<div className="card-action">
 				<div className="row">
-					<div className="col m9">
+					<div className="col s9">
 						<p style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
 							{item.sizes
 								? `As low as $${item.price[item.sizes[0]]}`
-								: item.price}
+								: item.price.toFixed(2)}
 						</p>
 					</div>
-					<div className="col m3">
+					<div className="col s3">
 						{item.available ? (
 							<p style={{ color: "green" }}>
 								Available <i className="material-icons">check</i>
 							</p>
 						) : (
-							<p style={{ color: "red" }}>
-								Not Available <i className="material-icons">close</i>
-							</p>
-						)}
+								<p style={{ color: "red" }}>
+									Not Available <i className="material-icons">close</i>
+								</p>
+							)}
 					</div>
 					<br />
 					{user.isAdmin && (

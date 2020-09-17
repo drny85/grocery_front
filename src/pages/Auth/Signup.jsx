@@ -60,7 +60,7 @@ const Signup = (props) => {
 			} else {
 				try {
 					const u = await signup(account.email, account.password);
-					
+
 					setUser({
 						uid: u.user.uid,
 						name: account.name,
@@ -85,7 +85,7 @@ const Signup = (props) => {
 				//handle login
 				try {
 					const u = await login(account.email, account.password);
-					console.log(u);
+
 					setLogin({
 						uid: u.user.uid,
 						email: u.user.email,
