@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import OrdersContext from "../context/orders/ordersContext";
@@ -15,11 +15,12 @@ const Order = (props) => {
 
 	const goToOrderDetails = () => {
 		setCurrentOrder(orderId);
-		history.push(`/order/details`);
+		history.push(`/order/details/${orderId}`);
 	};
 
-	React.useEffect(() => {
-		return () => {};
+	useEffect(() => {
+
+		return () => { };
 
 		//eslint-disable-next-line
 	}, []);
@@ -28,24 +29,22 @@ const Order = (props) => {
 		<div
 			style={{ cursor: "pointer" }}
 			onClick={goToOrderDetails}
-			className={`card ${
-				status === "new"
-					? "blue"
-					: status === "in progress"
+			className={`card ${status === "new"
+				? "blue"
+				: status === "in progress"
 					? "yellow"
 					: "green"
-			}
+				}
 	`}
 		>
 			<div className={`col s12 m12 `}>
 				<div
-					className={`card ${
-						status === "new"
-							? "light-blue darken-4"
-							: status === "in progress"
+					className={`card ${status === "new"
+						? "light-blue darken-4"
+						: status === "in progress"
 							? "yellow darken-4"
 							: "green lighten-1"
-					}`}
+						}`}
 				>
 					<div className="card-content white-text">
 						<div>
@@ -63,10 +62,10 @@ const Order = (props) => {
 								{street}, {city}
 							</span>
 						) : (
-							<span className="card-title capitalize">
-								Order Type: {orderType}
-							</span>
-						)}
+								<span className="card-title capitalize">
+									Order Type: {orderType}
+								</span>
+							)}
 
 						<div className="row">
 							<div className="col s7">

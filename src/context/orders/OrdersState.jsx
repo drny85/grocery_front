@@ -58,12 +58,13 @@ const OrdersState = (props) => {
       });
   };
 
-  const changeStatus = async (id, status) => {
+  const changeStatus = async (id, status, user = null) => {
     try {
       setLoading();
       await ordersRef.doc(id).update({
         status,
         deliveredOn: status === "delivered" ? new Date().toISOString() : null,
+        markedAsDeliveredBy: user
       });
 
       dispatch({ type: CHANGE_STATUS, payload: { id, status } });

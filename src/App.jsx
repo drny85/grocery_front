@@ -21,13 +21,14 @@ import { auth } from "./services/firebase";
 import AllOrders from "./pages/orders/AllOrders";
 import AuthContext from "./context/auth/authContext";
 import OrdersState from "./context/orders/OrdersState";
-import PrivateRoute from "./components/PrivatedRoute";
+
 import { Loader } from "./components/Loader";
 import NotificationSate from "./context/notifications/NotificationState";
 import OrderDetails from "./pages/orders/OrderDetails";
 import AddonsState from "./context/addons/AddonsState";
 import AddUpdateAddons from "./pages/addons/AddUpdateAddons";
-import AdminRoute from "./components/AdminRoute";
+import AdminRoute from "./middlewares/AdminRoute";
+import PrivateRoute from "./middlewares/PrivatedRoute";
 import EditItem from "./pages/Items/EditItem";
 
 const App = () => {
@@ -87,7 +88,7 @@ const App = () => {
 												/>
 												<PrivateRoute path="/orders" component={AllOrders} />
 												<PrivateRoute
-													path="/order/details"
+													path="/order/details/:id"
 													component={OrderDetails}
 												/>
 												<Route path="/signup" component={Signup} />

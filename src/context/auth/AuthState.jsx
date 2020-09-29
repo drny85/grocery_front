@@ -12,6 +12,7 @@ const AuthState = (props) => {
 		isLoading: false,
 		isAuthenticated: false,
 		isAdmin: false,
+		isOwner: false,
 		error: null,
 	};
 
@@ -65,6 +66,8 @@ const AuthState = (props) => {
 				createdAt: new Date().toISOString(),
 				isAdmin: false,
 				isActive: false,
+				isOwner: false,
+				store: null
 			});
 
 			const newUser = await db.collection("users").doc(user.id).get();
@@ -90,6 +93,7 @@ const AuthState = (props) => {
 				isLoading: state.isLoading,
 				isAuthenticated: state.isAuthenticated,
 				isAdmin: state.isAdmin,
+				isOwner: state.isOwner,
 				error: state.error,
 				login,
 				logout,
