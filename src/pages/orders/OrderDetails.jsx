@@ -7,35 +7,35 @@ import { withRouter } from "react-router-dom";
 import ItemsListDetails from "../../components/ItemsListDetails";
 import OrderDetailsTop from "../../components/OrderDetailsTop";
 
-const OrderDetails = props => {
-	const ordersContext = React.useContext(OrdersContext);
-	const { current, clearCurrent, changeStatus } = ordersContext;
-	
-	React.useEffect(() => {
-		
-		return () => {
-			clearCurrent();
-		};
-		//eslint-disable-next-line
-	}, []);
+const OrderDetails = (props) => {
+  const ordersContext = React.useContext(OrdersContext);
+  const { current, clearCurrent, changeStatus } = ordersContext;
 
+  React.useEffect(() => {
+    return () => {
+      clearCurrent();
+    };
+    //eslint-disable-next-line
+  }, []);
 
-	if (!current){
-		return <Loader />;
-	}
-	return (
-		<div className="container">
-			<div>
-				<Link to="/orders" className="btn secondary left">
-					Back to Orders
-				</Link>
-				<h4 className="center">Order Details</h4>
-			</div>
-            <OrderDetailsTop order={current} changeStatus={changeStatus} />
+  console.log("CURRENT", current);
 
-			<ItemsListDetails items={current.items} />
-		</div>
-	);
+  if (!current) {
+    return <Loader />;
+  }
+  return (
+    <div className="container">
+      <div>
+        <Link to="/orders" className="btn secondary left">
+          Back to Orders
+        </Link>
+        <h4 className="center">Order Details</h4>
+      </div>
+      <OrderDetailsTop order={current} changeStatus={changeStatus} />
+
+      <ItemsListDetails items={current.items} />
+    </div>
+  );
 };
 
 export default withRouter(OrderDetails);
