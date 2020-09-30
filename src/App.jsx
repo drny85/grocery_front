@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "materialize-css/dist/css/materialize.min.css";
 import "materialize-css/dist/js/materialize.min.js";
@@ -30,10 +30,12 @@ import AddUpdateAddons from "./pages/addons/AddUpdateAddons";
 import AdminRoute from "./middlewares/AdminRoute";
 import PrivateRoute from "./middlewares/PrivatedRoute";
 import EditItem from "./pages/Items/EditItem";
+import Application from "./pages/stores/Application";
+import Submitted from "./pages/stores/Submitted";
 
 const App = () => {
 	const authContext = React.useContext(AuthContext);
-	React.useEffect(() => {
+	useEffect(() => {
 		M.AutoInit();
 
 		auth.onAuthStateChanged((user) => {
@@ -45,7 +47,7 @@ const App = () => {
 				authContext.setLogin(user);
 			}
 		});
-		//eslint-disable-next-line
+		// eslint-disable-next-line
 	}, []);
 
 	return (
@@ -91,6 +93,8 @@ const App = () => {
 													path="/order/details/:id"
 													component={OrderDetails}
 												/>
+												<Route path='/application' component={Application} />
+												<Route path='/submitted' component={Submitted} />
 												<Route path="/signup" component={Signup} />
 												<PrivateRoute exact path="/" component={Home} />
 											</div>

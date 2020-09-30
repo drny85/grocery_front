@@ -28,11 +28,16 @@ const Signup = (props) => {
 		isAuthenticated,
 	} = authContext;
 
+
 	useEffect(() => {
-		if (user) {
+		if (user && user.isActive) {
 			props.history.replace("/orders");
+		} else if (user && !user.isActive) {
+			props.history.replace('/application')
+		} else {
+			props.history.replace('/')
 		}
-		//eslint-disable-next-line
+		//eslint - disable - next - line
 	}, [isAuthenticated, props.history, error]);
 
 	const setValue = (e) => {

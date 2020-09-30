@@ -1,0 +1,48 @@
+.form {
+    width: 100%;
+    height: 80vh;
+    background-color: rgb(241, 235, 226);
+    border-radius: 20px;
+    box-shadow: 8px 15px 5px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+}
+
+.sec {
+    margin-top: 1.5rem;
+}
+
+.title {
+    padding: 1rem;
+}
+label {
+    color: rgb(44, 28, 20) !important;
+    font-size: 1.1rem !important;
+}
+
+.submitted {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 auto;
+   
+
+}
+
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+
+.section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    padding: 0 10%;
+
+    
+}
