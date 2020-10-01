@@ -13,10 +13,12 @@ import SearchItem from "../../components/SearchItem";
 import { Link } from "react-router-dom";
 
 import "./AllItems.css";
+import authContext from "../../context/auth/authContext";
 
 const AllItems = ({ match }) => {
 	const itemsContext = useContext(ItemsContext);
 	const categoryContext = useContext(CategoryContext);
+	const { user } = useContext(authContext)
 	const {
 		getItems,
 		loading,
@@ -27,7 +29,7 @@ const AllItems = ({ match }) => {
 	const { getCategories } = categoryContext;
 
 	useEffect(() => {
-		getItems();
+		getItems(user?.store);
 		getCategories();
 
 		return () => {

@@ -9,6 +9,7 @@ import { withRouter, Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 import { Loader } from "../../components/Loader";
+import authContext from "../../context/auth/authContext";
 
 const SIZES = [
 	{ size: "small" },
@@ -20,6 +21,7 @@ const SIZES = [
 const AddUpdateItem = (props) => {
 	const itemsContext = useContext(ItemsContext);
 	const categoryContext = useContext(CategoryContext);
+	const { user } = useContext(authContext)
 	const { categories, getCategories, loading } = categoryContext;
 	const { id } = useParams();
 
@@ -187,6 +189,7 @@ const AddUpdateItem = (props) => {
 				available: true,
 				quantity: 1,
 				sizes: selectedSizes.value.length > 0 ? selectedSizes.value : null,
+				storeId: user?.store
 			};
 
 			const submitted = await addItem(added);

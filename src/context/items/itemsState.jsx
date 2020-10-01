@@ -64,10 +64,10 @@ const ItemsState = (props) => {
 		}
 	};
 
-	const getItems = async () => {
+	const getItems = async (storeId) => {
 		try {
 			setLoading();
-			const snapshot = await db.collection("items").get();
+			const snapshot = await db.collection("items").where('storeId', '==', storeId).get();
 			const temp = snapshot.docs.map((doc) => {
 				return {
 					id: doc.id,
@@ -78,6 +78,7 @@ const ItemsState = (props) => {
 			dispatch({ type: GET_ITEMS, payload: temp });
 		} catch (error) {
 			console.log(error);
+			dispatch({ type: GET_ITEMS, payload: [] });
 		}
 	};
 

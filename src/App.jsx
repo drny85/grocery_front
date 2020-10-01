@@ -32,6 +32,7 @@ import PrivateRoute from "./middlewares/PrivatedRoute";
 import EditItem from "./pages/Items/EditItem";
 import Application from "./pages/stores/Application";
 import Submitted from "./pages/stores/Submitted";
+import ApplicationStatus from "./pages/stores/ApplicationStatus";
 
 const App = () => {
 	const authContext = React.useContext(AuthContext);
@@ -93,7 +94,8 @@ const App = () => {
 													path="/order/details/:id"
 													component={OrderDetails}
 												/>
-												<Route path='/application' component={Application} />
+												<Route exact path='/application' component={Application} />
+												<Route exact path='/application-status' component={ApplicationStatus} />
 												<Route path='/submitted' component={Submitted} />
 												<Route path="/signup" component={Signup} />
 												<PrivateRoute exact path="/" component={Home} />

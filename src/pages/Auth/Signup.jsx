@@ -30,15 +30,20 @@ const Signup = (props) => {
 
 
 	useEffect(() => {
-		if (user && user.isActive) {
+
+		if (user && user.isActive && user.store !== 'pending' && user.store !== null) {
 			props.history.replace("/orders");
-		} else if (user && !user.isActive) {
+		} else if (user !== null && user?.isActive === false && user?.store === null) {
 			props.history.replace('/application')
+		} else if (user && !user?.isActive && user?.store === 'pending') {
+			props.history.replace('/application-status')
 		} else {
-			props.history.replace('/')
+
+
 		}
 		//eslint - disable - next - line
-	}, [isAuthenticated, props.history, error]);
+	}, [isAuthenticated, props.history, error, user]);
+
 
 	const setValue = (e) => {
 		setAccount({ ...account, [e.target.name]: e.target.value });
