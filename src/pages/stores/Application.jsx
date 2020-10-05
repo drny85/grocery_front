@@ -21,6 +21,7 @@ const Application = (props) => {
         zipcode: '',
         phone: '',
         status: 'pending'
+
     })
 
     const setValue = e => {
