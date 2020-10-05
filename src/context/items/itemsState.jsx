@@ -1,15 +1,15 @@
 // @ts-nocheck
 import {
-	ADD_ITEM,
-	GET_ITEMS,
-	SET_LOADING,
-	FILTER_ITEMS_BY_CATEGORY,
-	CLEAR_ITEMS_FILTERS,
-	SEARCH_BY_NAME,
-	SET_CURRENT_ITEM,
-	CLEAR_CURRENT_ITEM,
-	UPDATE_ITEM,
-	DELETE_ITEM,
+  ADD_ITEM,
+  GET_ITEMS,
+  SET_LOADING,
+  FILTER_ITEMS_BY_CATEGORY,
+  CLEAR_ITEMS_FILTERS,
+  SEARCH_BY_NAME,
+  SET_CURRENT_ITEM,
+  CLEAR_CURRENT_ITEM,
+  UPDATE_ITEM,
+  DELETE_ITEM,
 } from "../types";
 import React, { useReducer } from "react";
 import ItemsReducer from "./itemsReducer";
@@ -17,155 +17,164 @@ import ItemsContext from "./itemsContext";
 import { db } from "../../services/firebase";
 
 const ItemsState = (props) => {
-	const initialState = {
-		items: [],
-		current: null,
-		filtered: null,
-		loading: false,
-	};
+  const initialState = {
+    items: [],
+    current: null,
+    filtered: null,
+    loading: false,
+  };
 
-	const [state, dispatch] = useReducer(ItemsReducer, initialState);
+  const [state, dispatch] = useReducer(ItemsReducer, initialState);
 
-	const addItem = async (item) => {
-		try {
-			setLoading();
-			const doc = await db.collection("items").add(item);
-			const itemData = await db.collection("items").doc(doc.id).get();
-			if (itemData.exists) {
-				const t = {
-					id: doc.id,
-					...itemData.data(),
-				};
+  const addItem = async (item) => {
+    try {
+      setLoading();
+      const doc = await db.collection("items").add(item);
+      const itemData = await db.collection("items").doc(doc.id).get();
+      if (itemData.exists) {
+        const t = {
+          id: doc.id,
+          ...itemData.data(),
+        };
 
-				// @ts-ignore
-				dispatch({ type: ADD_ITEM, payload: t });
+        // @ts-ignore
+        dispatch({ type: ADD_ITEM, payload: t });
+      } else {
+        throw new Error("No data");
+      }
+      const store = await db.collection("stores").doc(item?.storeId).get();
+      if (store.exists) {
+        if (!store.data().hasItems) {
+          store.ref.update({
+            hasItems: true,
+          });
+        }
+      }
 
-			} else {
-				throw new Error("No data");
+      return true;
+      // dispatch({type: ADD_ITEM, payload: })
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
 
-			}
+  const updateItem = async (item) => {
+    try {
+      setLoading();
+      await db.collection("items").doc(item.id).update(item);
+      dispatch({ type: UPDATE_ITEM, payload: item });
+      getItems();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-			return true
-			// dispatch({type: ADD_ITEM, payload: })
-		} catch (error) {
-			console.log(error);
-			return false
-		}
-	};
+  const getItems = async (storeId) => {
+    try {
+      setLoading();
+      const snapshot = await db
+        .collection("items")
+        .where("storeId", "==", storeId)
+        .get();
+      const temp = snapshot.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+        };
+      });
+      // @ts-ignore
+      dispatch({ type: GET_ITEMS, payload: temp });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: GET_ITEMS, payload: [] });
+    }
+  };
 
-	const updateItem = async (item) => {
-		try {
-			setLoading();
-			await db.collection("items").doc(item.id).update(item);
-			dispatch({ type: UPDATE_ITEM, payload: item });
-			getItems();
-		} catch (error) {
-			console.log(error);
-		}
-	};
+  const filterItemsByCategory = (text) => {
+    setLoading();
+    dispatch({ type: FILTER_ITEMS_BY_CATEGORY, payload: text });
+  };
 
-	const getItems = async (storeId) => {
-		try {
-			setLoading();
-			const snapshot = await db.collection("items").where('storeId', '==', storeId).get();
-			const temp = snapshot.docs.map((doc) => {
-				return {
-					id: doc.id,
-					...doc.data(),
-				};
-			});
-			// @ts-ignore
-			dispatch({ type: GET_ITEMS, payload: temp });
-		} catch (error) {
-			console.log(error);
-			dispatch({ type: GET_ITEMS, payload: [] });
-		}
-	};
+  const setCurrentItem = async (id) => {
+    try {
+      setLoading();
+      const result = await db.collection("items").doc(id).get();
+      const data = { id: result.id, ...result.data() };
 
-	const filterItemsByCategory = (text) => {
-		setLoading();
-		dispatch({ type: FILTER_ITEMS_BY_CATEGORY, payload: text });
-	};
+      dispatch({ type: SET_CURRENT_ITEM, payload: data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-	const setCurrentItem = async (id) => {
-		try {
-			setLoading();
-			const result = await db.collection("items").doc(id).get();
-			const data = { id: result.id, ...result.data() };
+  const clearItemsFilters = () => {
+    setLoading();
+    dispatch({ type: CLEAR_ITEMS_FILTERS });
+  };
 
-			dispatch({ type: SET_CURRENT_ITEM, payload: data });
-		} catch (error) {
-			console.log(error);
-		}
-	};
+  const filterByName = (text) => {
+    setLoading();
+    dispatch({ type: SEARCH_BY_NAME, payload: text });
+  };
 
-	const clearItemsFilters = () => {
-		setLoading();
-		dispatch({ type: CLEAR_ITEMS_FILTERS });
-	};
+  const setCurrent = (item) => {
+    setLoading();
+    dispatch({ type: SET_CURRENT_ITEM, payload: item });
+  };
 
-	const filterByName = (text) => {
-		setLoading();
-		dispatch({ type: SEARCH_BY_NAME, payload: text });
-	};
+  const clearCurrent = () => {
+    setLoading();
+    dispatch({ type: CLEAR_CURRENT_ITEM });
+  };
 
-	const setCurrent = (item) => {
-		setLoading();
-		dispatch({ type: SET_CURRENT_ITEM, payload: item });
-	};
+  const deleteItem = async (id) => {
+    try {
+      setLoading();
+      await db.collection("items").doc(id).delete();
+      dispatch({ type: DELETE_ITEM, payload: id });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const changeAvailability = async (id, value) => {
+    try {
+      setLoading();
+      await db.collection("items").doc(id).update({
+        available: value,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-	const clearCurrent = () => {
-		setLoading();
-		dispatch({ type: CLEAR_CURRENT_ITEM });
-	};
+  // @ts-ignore
+  const setLoading = () => dispatch({ type: SET_LOADING });
 
-	const deleteItem = async (id) => {
-		try {
-			setLoading();
-			await db.collection("items").doc(id).delete();
-			dispatch({ type: DELETE_ITEM, payload: id });
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const changeAvailability = async (id, value) => {
-		try {
-			setLoading();
-			await db.collection("items").doc(id).update({
-				available: value,
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	// @ts-ignore
-	const setLoading = () => dispatch({ type: SET_LOADING });
-
-	return (
-		<ItemsContext.Provider
-			value={{
-				items: state.items,
-				current: state.current,
-				loading: state.loading,
-				filtered: state.filtered,
-				addItem,
-				getItems,
-				setLoading,
-				clearItemsFilters,
-				filterItemsByCategory,
-				filterByName,
-				setCurrent,
-				clearCurrent,
-				updateItem,
-				deleteItem,
-				setCurrentItem,
-				changeAvailability,
-			}}
-		>
-			{props.children}
-		</ItemsContext.Provider>
-	);
+  return (
+    <ItemsContext.Provider
+      value={{
+        items: state.items,
+        current: state.current,
+        loading: state.loading,
+        filtered: state.filtered,
+        addItem,
+        getItems,
+        setLoading,
+        clearItemsFilters,
+        filterItemsByCategory,
+        filterByName,
+        setCurrent,
+        clearCurrent,
+        updateItem,
+        deleteItem,
+        setCurrentItem,
+        changeAvailability,
+      }}
+    >
+      {props.children}
+    </ItemsContext.Provider>
+  );
 };
 
 export default ItemsState;
