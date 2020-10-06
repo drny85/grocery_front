@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import OrdersByStatus from "../../components/OrdersByStatus";
 import OrdersContext from "../../context/orders/ordersContext";
 import NotificationContext from "../../context/notifications/notificationContext";
@@ -10,16 +10,22 @@ import './AllOrders.css';
 
 import moment from 'moment'
 
+import authContext from "../../context/auth/authContext";
+import { Loader } from "../../components/Loader";
+
 const AllOrders = () => {
-	const ordersContext = React.useContext(OrdersContext);
+	const ordersContext = useContext(OrdersContext);
+	const { user } = useContext(authContext)
+
 	const {
 		getOrders,
 		stopListening,
 		filterOrders,
 		setOrderFilter,
+
 		clearOrderFilter,
 	} = ordersContext;
-	const notificationContext = React.useContext(NotificationContext);
+	const notificationContext = useContext(NotificationContext);
 	const { removeNotification, setNotification } = notificationContext;
 	const dateRef1 = useRef();
 	const dateRef2 = useRef();
@@ -60,6 +66,9 @@ const AllOrders = () => {
 	};
 
 	useEffect(() => {
+		if (user) {
+			getOrders(user?.store);
+		}
 		M.Datepicker.init(dateRef1.current, {
 			maxDate: new Date(),
 			defaultDate: new Date(),
@@ -72,7 +81,7 @@ const AllOrders = () => {
 			yearRange: 2,
 			onSelect: getEndDate,
 		});
-		getOrders();
+
 		setNotification();
 
 		return () => {
@@ -84,12 +93,13 @@ const AllOrders = () => {
 		//eslint-disable-next-line
 	}, []);
 
+
 	return (
 		<div className="orders">
 			<h3 className="center">{isFiltered ? (`Orders from ${moment(startDate).format("L")} to ${moment(endDate).format('L')}`) : ("Today's Orders")}</h3>
 			<div className="row datePicker">
 				<form>
-					<div className={`col ${isFiltered ? 's5': 's6'}`}>
+					<div className={`col ${isFiltered ? 's5' : 's6'}`}>
 						<input
 							ref={dateRef1}
 							type="text"
@@ -97,7 +107,7 @@ const AllOrders = () => {
 							className="datepicker"
 						/>
 					</div>
-					<div className={`col ${isFiltered ? 's5': 's6'}`}>
+					<div className={`col ${isFiltered ? 's5' : 's6'}`}>
 						<input
 							ref={dateRef2}
 							placeholder="Orders To"
@@ -105,10 +115,10 @@ const AllOrders = () => {
 							className="datepicker"
 						/>
 					</div>
-					<div className={`col ${isFiltered ? 's2': 's6'}`}>
+					<div className={`col ${isFiltered ? 's2' : 's6'}`}>
 						{isFiltered && (
 							<button
-								
+
 								onClick={clearFilters}
 								className="btn orange"
 							>

@@ -95,12 +95,12 @@ export default (state, action) => {
 
 					return order.orderType === "delivery"
 						? order.customer.name.match(regex) ||
-								order.customer.lastName.match(regex) ||
-								order.customer.phone.match(regex) ||
-								order.customer.address.street.match(regex)
+						order.customer.lastName.match(regex) ||
+						order.customer.phone.match(regex) ||
+						order.customer.address.street.match(regex)
 						: order.customer.name.match(regex) ||
-								order.customer.lastName.match(regex) ||
-								order.customer.phone.match(regex);
+						order.customer.lastName.match(regex) ||
+						order.customer.phone.match(regex);
 				}),
 				loading: false,
 			};

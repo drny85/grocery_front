@@ -39,23 +39,35 @@ const OrdersState = (props) => {
   };
 
   let listener;
-  const getOrders = async () => {
-    setLoading();
-    listener = await ordersRef
-      .orderBy("orderPlaced", "desc")
-      .onSnapshot((values) => {
-        let orders = [];
-        values.forEach((doc) => {
-          let order = {
-            id: doc.id,
-            ...doc.data(),
-          };
-          orders.push(order);
+  const getOrders = async (restaurantId) => {
+
+    try {
+
+      setLoading();
+      console.log(restaurantId)
+      listener = db.collection('orders')
+        .where('restaurantId', '==', restaurantId)
+        .orderBy("orderPlaced", "desc")
+        .onSnapshot((values) => {
+          let orders = [];
+          values.forEach((doc) => {
+            let order = {
+              id: doc.id,
+              ...doc.data(),
+            };
+            orders.push(order);
+          });
+
+          dispatch({ type: GET_ORDERS, payload: orders });
+          calculateOrderCounts();
         });
 
-        dispatch({ type: GET_ORDERS, payload: orders });
-        calculateOrderCounts();
-      });
+    } catch (error) {
+      console.log(error)
+      dispatch({ type: GET_ORDERS, payload: [] });
+    }
+
+
   };
 
   const changeStatus = async (id, status, user = null) => {

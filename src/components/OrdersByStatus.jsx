@@ -14,9 +14,9 @@ const OrdersByStatus = (props) => {
 	const { loading, filtered } = ordersContex;
 	const orders = useDatedOrders(start, end);
 
-	if (loading) {
-		return <Loader />;
-	}
+	// if (loading) {
+	// 	return <Loader />;
+	// }
 
 	//return <Order key={doc.id} order={order} orderId={doc.id} />;
 
@@ -26,8 +26,8 @@ const OrdersByStatus = (props) => {
 				{status === "new"
 					? `New Orders`
 					: status === "in progress"
-					? "In Progress"
-					: "Delivered"}{" "}
+						? "In Progress"
+						: "Delivered"}{" "}
 				<span>
 					({orders.filter((order) => order.status === status).length})
 				</span>{" "}
@@ -41,12 +41,12 @@ const OrdersByStatus = (props) => {
 						return <Order key={order.id} order={order} orderId={order.id} />;
 					})
 			) : (
-				orders
-					.filter((order) => order.status === status)
-					.map((order) => {
-						return <Order key={order.id} order={order} orderId={order.id} />;
-					})
-			)}
+						orders
+							.filter((order) => order.status === status)
+							.map((order) => {
+								return <Order key={order.id} order={order} orderId={order.id} />;
+							})
+					)}
 		</div>
 	);
 };
