@@ -44,7 +44,7 @@ const OrdersState = (props) => {
     try {
 
       setLoading();
-      console.log(restaurantId)
+
       listener = db.collection('orders')
         .where('restaurantId', '==', restaurantId)
         .orderBy("orderPlaced", "desc")

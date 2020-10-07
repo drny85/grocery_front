@@ -14,7 +14,7 @@ export const AllCategories = (props) => {
     isLoading,
     clearCategory,
   } = categoryContext;
-  console.log(categories, user);
+
 
   useEffect(() => {
     getCategories(user?.store);
@@ -40,7 +40,7 @@ export const AllCategories = (props) => {
                 {category.name}
                 <Link
                   to="#"
-                  onClick={() => setCategory(category.id)}
+                  onClick={() => setCategory(category.id, user?.store)}
                   className="secondary-content"
                 >
                   <i className="material-icons">edit</i>
@@ -49,8 +49,8 @@ export const AllCategories = (props) => {
             </li>
           ))
         ) : (
-          <div className="center">No categries</div>
-        )}
+            <div className="center">No categries</div>
+          )}
       </ul>
     </div>
   );

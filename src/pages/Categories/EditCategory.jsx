@@ -5,7 +5,7 @@ export const EditCategory = ({ match }) => {
 	const categoryId = match.params.id;
 	const categoryContext = useContext(CategoryContext);
 	const { setCategory, category, clearCategory } = categoryContext;
-	console.log(category);
+
 
 	useEffect(() => {
 		setCategory(categoryId);

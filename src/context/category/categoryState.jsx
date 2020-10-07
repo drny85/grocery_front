@@ -29,15 +29,16 @@ const CategoryState = (props) => {
   const addCategory = async (category) => {
     try {
       setLoading();
-      console.log("CATEGOTY", category);
+
+      category.name.trim().toLowerCase()
       const snap = db
         .collection("categories")
-        .where("name", "==", category.name);
+        .doc(category.storeId).collection('categories').where('storeId', '==', category.name)
 
       const found = (await snap.get()).docs.length;
       console.log(category);
       if (found === 0) {
-        await db.collection("categories").add(category);
+        await db.collection("categories").doc(category.storeId).collection('categories').add(category);
         // @ts-ignore
         getCategories(category.storeId);
         clearCategoryError();
@@ -59,26 +60,22 @@ const CategoryState = (props) => {
       setLoading();
       const snapshot = await db
         .collection("categories")
-        .where("storeId", "==", storeId)
-        .get();
-      const temp = snapshot.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-        };
-      });
+        .doc(storeId).collection('categories').get()
 
-      // @ts-ignore
-      dispatch({ type: GET_CATEGORIES, payload: temp });
+      const allCategories = snapshot.docs.map(cat => {
+        return { id: cat.id, ...cat.data() }
+      })
+
+      dispatch({ type: GET_CATEGORIES, payload: allCategories });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const setCategory = async (id) => {
+  const setCategory = async (id, storeId) => {
     try {
       setLoading();
-      const doc = db.collection("categories").doc(id).get();
+      const doc = db.collection("categories").doc(storeId).collection('categories').doc(id).get();
       const category = (await doc).data();
 
       dispatch({ type: SET_CATEGORY, payload: { id: id, ...category } });
