@@ -26,23 +26,21 @@ const ItemsState = (props) => {
 
   const [state, dispatch] = useReducer(ItemsReducer, initialState);
 
-  const addItem = async (item) => {
+  const addItem = async (item, storeId) => {
     try {
       setLoading();
-      const doc = await db.collection("items").add(item);
-      const itemData = await db.collection("items").doc(doc.id).get();
-      if (itemData.exists) {
-        const t = {
-          id: doc.id,
-          ...itemData.data(),
-        };
+      await db.collection("items").doc(storeId).collection("items").add(item);
+      const itemData = await db
+        .collection("items")
+        .doc(storeId)
+        .collection("items")
+        .get();
 
-        // @ts-ignore
-        dispatch({ type: ADD_ITEM, payload: t });
-      } else {
-        throw new Error("No data");
-      }
-      const store = await db.collection("stores").doc(item?.storeId).get();
+      const allItems = itemData.docs.map((item) => {
+        return { id: item.id, ...item.data() };
+      });
+
+      const store = await db.collection("stores").doc(storeId).get();
       if (store.exists) {
         if (!store.data().hasItems) {
           store.ref.update({
@@ -50,6 +48,8 @@ const ItemsState = (props) => {
           });
         }
       }
+
+      dispatch({ type: ADD_ITEM, payload: allItems });
 
       return true;
       // dispatch({type: ADD_ITEM, payload: })
@@ -59,10 +59,15 @@ const ItemsState = (props) => {
     }
   };
 
-  const updateItem = async (item) => {
+  const updateItem = async (item, storeId) => {
     try {
       setLoading();
-      await db.collection("items").doc(item.id).update(item);
+      await db
+        .collection("items")
+        .doc(storeId)
+        .collection("items")
+        .doc(item.id)
+        .update(item);
       dispatch({ type: UPDATE_ITEM, payload: item });
       getItems();
     } catch (error) {
@@ -73,9 +78,11 @@ const ItemsState = (props) => {
   const getItems = async (storeId) => {
     try {
       setLoading();
+
       const snapshot = await db
         .collection("items")
-        .where("storeId", "==", storeId)
+        .doc(storeId)
+        .collection("items")
         .get();
       const temp = snapshot.docs.map((doc) => {
         return {
@@ -96,14 +103,20 @@ const ItemsState = (props) => {
     dispatch({ type: FILTER_ITEMS_BY_CATEGORY, payload: text });
   };
 
-  const setCurrentItem = async (id) => {
+  const setCurrentItem = async (id, storeId) => {
     try {
       setLoading();
-      const result = await db.collection("items").doc(id).get();
+      const result = await db
+        .collection("items")
+        .doc(storeId)
+        .collection("items")
+        .doc(id)
+        .get();
       const data = { id: result.id, ...result.data() };
 
       dispatch({ type: SET_CURRENT_ITEM, payload: data });
     } catch (error) {
+      console.log("--", storeId);
       console.log(error);
     }
   };
@@ -128,21 +141,31 @@ const ItemsState = (props) => {
     dispatch({ type: CLEAR_CURRENT_ITEM });
   };
 
-  const deleteItem = async (id) => {
+  const deleteItem = async (id, storeId) => {
     try {
       setLoading();
-      await db.collection("items").doc(id).delete();
+      await db
+        .collection("items")
+        .doc(storeId)
+        .collection("items")
+        .doc(id)
+        .delete();
       dispatch({ type: DELETE_ITEM, payload: id });
     } catch (error) {
       console.log(error);
     }
   };
-  const changeAvailability = async (id, value) => {
+  const changeAvailability = async (id, value, storeId) => {
     try {
       setLoading();
-      await db.collection("items").doc(id).update({
-        available: value,
-      });
+      await db
+        .collection("items")
+        .doc(storeId)
+        .collection("items")
+        .doc(id)
+        .update({
+          available: value,
+        });
     } catch (error) {
       console.log(error);
     }

@@ -83,7 +83,7 @@ const AddUpdateItem = (props) => {
 
   useEffect(() => {
     if (id) {
-      setCurrentItem(id);
+      setCurrentItem(id, user?.store);
     }
     return () => {
       clearCurrent();
@@ -152,7 +152,7 @@ const AddUpdateItem = (props) => {
         quantity: 1,
       };
 
-      updateItem(updated);
+      updateItem(updated, user?.store);
       if (updated.id !== null) {
         setItem({
           name: "",
@@ -190,7 +190,7 @@ const AddUpdateItem = (props) => {
         storeId: user?.store,
       };
 
-      const submitted = await addItem(added);
+      const submitted = await addItem(added, user?.store);
       if (submitted) {
         setItem({
           name: "",
@@ -228,10 +228,10 @@ const AddUpdateItem = (props) => {
 
   const handleAvailability = () => {
     if (current.available) {
-      changeAvailability(current.id, false);
+      changeAvailability(current.id, false, user?.store);
       goBackToItems();
     } else {
-      changeAvailability(current.id, true);
+      changeAvailability(current.id, true, user?.store);
       goBackToItems();
     }
   };
