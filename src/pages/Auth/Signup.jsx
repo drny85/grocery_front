@@ -38,7 +38,7 @@ const Signup = (props) => {
 		} else if (user && !user?.isActive && user?.store === 'pending') {
 			props.history.replace('/application-status')
 		} else {
-
+			props.history.replace('/')
 
 		}
 		//eslint - disable - next - line

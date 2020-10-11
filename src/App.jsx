@@ -33,6 +33,8 @@ import EditItem from "./pages/Items/EditItem";
 import Application from "./pages/stores/Application";
 import Submitted from "./pages/stores/Submitted";
 import ApplicationStatus from "./pages/stores/ApplicationStatus";
+import OwnerRoute from "./middlewares/OwnerRoute";
+import AdminPage from "./pages/Auth/AdminPage";
 
 const App = () => {
 	const authContext = React.useContext(AuthContext);
@@ -65,12 +67,13 @@ const App = () => {
 
 											<div className="">
 
-												<AdminRoute
+
+												<OwnerRoute
 													exact
 													path="/item/:id"
 													component={AddUpdateItem}
 												/>
-												<AdminRoute exact path="/item" component={AddUpdateItem} />
+												<OwnerRoute exact path="/item" component={AddUpdateItem} />
 
 												<PrivateRoute path="/all-items" component={AllItems} />
 												<PrivateRoute
@@ -81,11 +84,11 @@ const App = () => {
 													path="/categories"
 													component={AllCategories}
 												/>
-												<AdminRoute
+												<OwnerRoute
 													path="/category/:id"
 													component={EditCategory}
 												/>
-												<AdminRoute
+												<OwnerRoute
 													path="/addons"
 													component={AddUpdateAddons}
 												/>
@@ -98,6 +101,7 @@ const App = () => {
 												<Route exact path='/application-status' component={ApplicationStatus} />
 												<Route path='/submitted' component={Submitted} />
 												<Route path="/signup" component={Signup} />
+												<AdminRoute path="/admin" component={AdminPage} />
 												<PrivateRoute exact path="/" component={Home} />
 											</div>
 										</Fragment>

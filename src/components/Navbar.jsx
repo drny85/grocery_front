@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import { NavLink, withRouter } from "react-router-dom";
 import AuthContext from "../context/auth/authContext";
+import { Loader } from "./Loader";
 
 const Navbar = (props) => {
 	const authContext = React.useContext(AuthContext);
-	const { user, isAuthenticated } = authContext;
+	const { user, isAuthenticated, store, loading } = authContext;
+
 	const logout = () => {
 		authContext.logout();
 		props.history.replace("/signup");
 	};
 
 	const adminRoute = (user) => {
-		if (user.isAdmin && user.isActive) {
+		if (user.isAdmin && user.isActive || user?.isOwner) {
 			return (
 				<>
 					<li className="nav-item" data-toggle="collapse">
@@ -43,6 +46,12 @@ const Navbar = (props) => {
 		}
 	};
 
+
+
+
+
+	if (loading) return <Loader />
+
 	return (
 		<div className="navbar-fixed">
 			<nav className="bg-light secondary">
@@ -52,12 +61,12 @@ const Navbar = (props) => {
 							<>
 								<li className="nav-item" data-toggle="collapse">
 									<NavLink
-										className="nav-link"
+										className="nav-link capitalize bold"
 										exact
 										activeClassName="current"
 										to="/"
 									>
-										Home <span className="sr-only"></span>
+										{store ? store.name : 'Home'} <span className="sr-only"></span>
 									</NavLink>
 								</li>
 

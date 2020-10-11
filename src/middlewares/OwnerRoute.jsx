@@ -11,13 +11,13 @@ const OwnerRoute = ({ component: Component, ...rest }) => {
 
     if (!user) return <Signup />;
 
-    const { isActive, isOwner } = user;
+    const { isActive, isOwner, isAdmin } = user;
 
     return (
         <Route
             {...rest}
             render={(props) => {
-                if (isAuthenticated && !isLoading && isActive && isOwner) {
+                if (isAuthenticated && !isLoading && isActive && isOwner || isAdmin) {
                     return <Component {...props} />;
                 } else {
                     return <Redirect to="/signup" />;

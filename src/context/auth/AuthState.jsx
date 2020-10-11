@@ -3,7 +3,7 @@ import React, { useReducer } from "react";
 import authReducer from "./authReducer";
 import AuthContext from "./authContext";
 
-import { SET_LOADING, LOGIN, LOGOUT, AUTH_ERROR } from "../types";
+import { SET_LOADING, LOGIN, LOGOUT, AUTH_ERROR, SET_STORE } from "../types";
 import { auth, db } from "../../services/firebase";
 
 const AuthState = (props) => {
@@ -14,6 +14,7 @@ const AuthState = (props) => {
 		isAdmin: false,
 		isOwner: false,
 		error: null,
+		store: null
 	};
 
 	const [state, dispatch] = useReducer(authReducer, initialState);
@@ -23,16 +24,28 @@ const AuthState = (props) => {
 	};
 
 	const setLogin = async (user) => {
-		setLoading();
-		const n = await db.collection("users").doc(user.uid).get();
 
-		const u = n.data();
-		if (u) {
-			dispatch({
-				type: LOGIN,
-				payload: u,
-			});
+		try {
+			setLoading();
+			const n = await db.collection("users").doc(user.uid).get();
+
+			const u = n.data();
+
+			userStore(u.store)
+			if (u) {
+				dispatch({
+					type: LOGIN,
+					payload: u,
+				});
+
+			}
+
+
+
+		} catch (error) {
+			console.log('logging in', error)
 		}
+
 	};
 
 	const signup = async (email, password) => {
@@ -45,6 +58,7 @@ const AuthState = (props) => {
 		auth.onAuthStateChanged((u) => {
 			if (u) {
 				setLogin(u);
+
 			}
 		});
 	};
@@ -84,6 +98,21 @@ const AuthState = (props) => {
 		}
 	};
 
+	const userStore = async storeId => {
+		try {
+			if (storeId) {
+
+				setLoading()
+				const store = (await db.collection('stores').doc(storeId).get())
+				dispatch({ type: SET_STORE, payload: { id: store.id, ...store.data() } })
+			}
+
+		} catch (error) {
+			console.log(error)
+		}
+
+	}
+
 	const setLoading = () => dispatch({ type: SET_LOADING });
 
 	return (
@@ -95,6 +124,7 @@ const AuthState = (props) => {
 				isAdmin: state.isAdmin,
 				isOwner: state.isOwner,
 				error: state.error,
+				store: state.store,
 				login,
 				logout,
 				signup,
@@ -102,6 +132,7 @@ const AuthState = (props) => {
 				setUser,
 				autoLogin,
 				setLogin,
+				userStore,
 			}}
 		>
 			{props.children}

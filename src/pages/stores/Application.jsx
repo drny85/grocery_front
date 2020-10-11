@@ -38,17 +38,29 @@ const Application = (props) => {
         e.preventDefault();
         const newStore = { ...store, userId: user.userId }
 
+        console.log(newStore)
+
         try {
-            const stores = await db.collection('stores').where('userId', '==', user.userId).get()
-            if (stores.size === 0) {
-                const res = await db.collection('stores').add(newStore)
-                if (res.id) {
-                    props.history.replace('/submitted')
+            const query = (await db.collection('stores').doc(user?.userId).get());
+            if (query.exists) {
+                //store already found
+                const stores = query.data();
+                if (stores.length === 0) {
+
+                    const res = await db.collection('stores').doc(user?.userId).add(newStore)
+                    if (res.id) {
+                        props.history.replace('/submitted')
+                    }
+                } else if (stores.length > 0) {
+                    alert('You already submitted an application')
+                    return;
+                } else {
+                    console.log('error')
                 }
-            } else if (stores.size > 0) {
-                alert('You already submitted an application')
-                return;
+
             }
+
+
 
 
 

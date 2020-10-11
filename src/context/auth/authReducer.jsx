@@ -3,7 +3,7 @@ import {
 	LOGOUT,
 	AUTH_ERROR,
 	LOGIN_SUCCESS,
-	SET_LOADING
+	SET_LOADING, SET_STORE
 } from "../types";
 
 export default (state, action) => {
@@ -24,7 +24,8 @@ export default (state, action) => {
 				isLoading: false,
 				user: null,
 				isAuthenticated: false,
-				error: null
+				error: null,
+				store: null
 			};
 		case LOGIN_SUCCESS:
 			return {
@@ -40,6 +41,13 @@ export default (state, action) => {
 				error: false
 			};
 
+		case SET_STORE:
+			return {
+				...state,
+				loading: false,
+				store: action.payload
+			};
+
 		case AUTH_ERROR:
 			localStorage.removeItem("groceryToken");
 			return {
@@ -47,7 +55,8 @@ export default (state, action) => {
 				error: action.payload,
 				isLoading: false,
 				isAuthenticated: false,
-				user: null
+				user: null,
+				store: null
 			};
 
 		default:

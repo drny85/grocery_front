@@ -96,7 +96,7 @@ const AllOrders = () => {
 
 	return (
 		<div className="orders">
-			<h3 className="center">{isFiltered ? (`Orders from ${moment(startDate).format("L")} to ${moment(endDate).format('L')}`) : ("Today's Orders")}</h3>
+			<h4 className="center">{isFiltered ? (`Orders from ${moment(startDate).format("L")} to ${moment(endDate).format('L')}`) : ("Today's Orders")}</h4>
 			<div className="row datePicker">
 				<form>
 					<div className={`col ${isFiltered ? 's5' : 's6'}`}>

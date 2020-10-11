@@ -46,3 +46,4 @@ export const CLEAR_ADDON_ERROR = "CLEAR_ADDON_ERROR";
 export const CLEAR_ADDON = "CLEAR_ADDON";
 export const UPDATE_ADDON = "UPDATE_ADDON";
 export const SET_ADDON = "SET_ADDON";
+export const SET_STORE = 'SET_STORE';
