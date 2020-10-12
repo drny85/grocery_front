@@ -4,14 +4,14 @@ import "firebase/firestore";
 import "firebase/storage";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyBYxZ7c3saf5zHkXpDgXIkSzoIR6ogHbtg",
-	authDomain: "grocery-409ef.firebaseapp.com",
-	databaseURL: "https://grocery-409ef.firebaseio.com",
-	projectId: "grocery-409ef",
-	storageBucket: "grocery-409ef.appspot.com",
-	messagingSenderId: "897113180247",
-	appId: "1:897113180247:web:131d1ce3d7fddaeba13b12",
-	measurementId: "G-FWR2GHNDSM"
+	apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+	authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+	databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+	projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+	storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+	appId: process.env.REACT_APP_FIREBASE_APPP_ID,
+	measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENTID
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
